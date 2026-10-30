@@ -1,0 +1,25 @@
+rules_version = '2';
+// Paste this into Firebase console → Firestore Database → Rules, then click Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function boards() {
+      return ['scores', 'scores-rose', 'scores-greek', 'scores-exec', 'scores-exec25', 'scores-classes'];
+    }
+    function validEntry(coll) {
+      let d = request.resource.data;
+      return d.name is string && d.name.size() > 0 && d.name.size() <= 24
+        && d.runs is list && d.runs.size() <= 100
+        && d.best is map
+        // typing tests: no impossible speeds
+        && (!(coll in ['scores', 'scores-rose']) || (d.best.wpm is number && d.best.wpm < 250))
+        // quizzes: score can't exceed number of questions
+        && ((coll in ['scores', 'scores-rose']) || (d.best.score is number && d.best.total is number && d.best.score <= d.best.total && d.best.total <= 30));
+    }
+    match /{coll}/{uid} {
+      allow read: if coll in boards();
+      // each visitor can only create, change or delete their own entry
+      allow create, update: if coll in boards() && request.auth != null && request.auth.uid == uid && validEntry(coll);
+      allow delete: if coll in boards() && request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
