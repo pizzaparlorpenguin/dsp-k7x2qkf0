@@ -35,6 +35,12 @@
   header{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
   .logo{display:flex;align-items:center;gap:12px;user-select:none}
   .logo img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 2px var(--gold);flex:none}
+  .logolink{position:relative;display:inline-flex;flex:none;border-radius:8px}
+  .logolink .playbadge{display:none}
+  .rose .logolink{cursor:pointer}
+  .rose .logolink .playbadge{display:flex;position:absolute;right:-6px;bottom:-6px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:10px;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg);padding-left:2px}
+  .rose .logolink:hover img{filter:brightness(1.1);transform:scale(1.04)}
+  .logolink img{transition:transform .15s, filter .15s}
   .rose .logo img{width:46px;height:62px;border-radius:7px;object-fit:cover;object-position:top}
   .logo .lt{display:flex;align-items:baseline;gap:10px}
   .logo .lt > div{display:flex;flex-direction:column;align-items:center;text-align:center}
@@ -273,7 +279,7 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="logo"><img id="logoImg" src="logo-seal.png" alt="Delta Sigma Pi seal"><div class="lt"><span class="greek">ΔΣΠ</span><div><span class="word">type</span><small id="logoSub">mission statement</small></div></div></div>
+    <div class="logo"><a id="logoLink" class="logolink" target="_blank" rel="noopener"><img id="logoImg" src="logo-seal.png" alt="Delta Sigma Pi seal"><span class="playbadge" aria-hidden="true">▶</span></a><div class="lt"><span class="greek">ΔΣΠ</span><div><span class="word">type</span><small id="logoSub">mission statement</small></div></div></div>
     <nav>
       <button data-v="test" class="on" id="navFirst">type</button>
       <button data-v="board">leaderboard</button>
@@ -371,19 +377,12 @@
 /* ---------- shared leaderboard on GitHub Pages ----------
    Paste your Firebase web config here (Firebase console → Project settings → Your apps → SDK setup and configuration → Config).
    Leave it as null to keep scores in each visitor's browser only. */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAeapXlq-Ye32RmaqLCfNLYUS6UvsbAJTI",
-  authDomain: "dsp-studylb.firebaseapp.com",
-  projectId: "dsp-studylb",
-  storageBucket: "dsp-studylb.firebasestorage.app",
-  messagingSenderId: "248209719372",
-  appId: "1:248209719372:web:9946e7d2c9a9b3909a34e9"
-};
+const FIREBASE_CONFIG = null;
 
 const TEXTS = {
   mission: {name:'Mission statement', sub:'mission statement', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores', foot:'text: the Delta Sigma Pi purpose statement',
     text:"Delta Sigma Pi is a professional fraternity organized to foster the study of business in universities; to encourage scholarship, social activity and the association of students for their mutual advancement by research and practice; to promote closer affiliation between the commercial world and students of commerce, and to further a higher standard of commercial ethics and culture and the civic and commercial welfare of the community."},
-  rose: {name:'Rose of Deltasig', sub:'rose of deltasig', img:'logo-rose.png', alt:'Rose of Delta Sig sheet music cover', coll:'scores-rose', foot:'text: chorus of Rose of Deltasig, words and music by Paul H. Coughlin (Mu Chapter)',
+  rose: {song:'https://www.youtube.com/watch?v=rD4NK91GH78', name:'Rose of Deltasig', sub:'rose of deltasig', img:'logo-rose.png', alt:'Rose of Delta Sig sheet music cover', coll:'scores-rose', foot:'text: chorus of Rose of Deltasig, words and music by Paul H. Coughlin (Mu Chapter)',
     text:"Rose of Deltasig I love you, Rose of Delta Sigma Pi, When the shades of night are falling I dream of days gone by; As I go thru life's long journey, Memories will never die, I will always hear you calling, Rose of Delta Sigma Pi."},
   classes: {name:'Pledge Classes', sub:'pledge classes', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-classes', quiz:true, foot:'study mode: every pledge class from Zeta Delta to Zeta Lambda, with pledge educators', text:''},
   greek: {name:'Greek Letters', sub:'greek letters', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-greek', quiz:true, foot:'study mode: all 24 letters of the Greek alphabet', text:''},
@@ -407,6 +406,9 @@ function applyText(){
   TEXT = t.text; WORD_COUNT = TEXT.split(' ').length;
   document.body.classList.toggle('rose', tkey === 'rose');
   $('#logoImg').src = t.img; $('#logoImg').alt = t.alt;
+  const ll = $('#logoLink');
+  if (t.song){ ll.href = t.song; ll.title = 'Listen to Rose of Deltasig on YouTube'; ll.setAttribute('aria-label', 'Listen to Rose of Deltasig on YouTube'); }
+  else { ll.removeAttribute('href'); ll.removeAttribute('title'); ll.removeAttribute('aria-label'); }
   $('#logoSub').textContent = t.sub; $('#foot').textContent = 'ΔΣΠ type · ' + t.foot;
   $('#textSel').value = tkey;
   $('#boardTitle').textContent = 'leaderboard · ' + t.name.toLowerCase() + ' · best run per person';
