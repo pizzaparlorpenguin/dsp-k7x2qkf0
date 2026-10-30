@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ΔΣΠ Type — Mission Statement Typing Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Lexend+Deca:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#4a2a85; --bg2:#5a3797; --bg3:#6a46a8;
+    --sub:#a993d1; --sub2:#8670b6; --text:#f4eefc;
+    --gold:#cfb53b; --gold-dim:#b39a2e; --purple:#e2d4ff;
+    --err:#ff8a9a; --err-dim:#8e3a62; --ok:#9be3b5;
+    --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    --ui:'Lexend Deca', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);min-height:100%}
+  body{display:flex;flex-direction:column;min-height:100vh}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:28px 32px;flex:1;display:flex;flex-direction:column}
+
+  /* header */
+  header{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;user-select:none}
+  .logo img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 2px var(--gold);flex:none}
+  .rose .logo img{width:46px;height:62px;border-radius:7px;object-fit:cover;object-position:top}
+  .logo .lt{display:flex;align-items:baseline;gap:10px}
+  .logo .lt > div{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .logo .lt > div small{margin-top:0}
+  .textsel{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:13px}
+  .textsel select{appearance:none;-webkit-appearance:none;background:var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23cfb53b'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--gold);border:1px solid transparent;font-family:var(--ui);font-size:14px;padding:7px 30px 7px 12px;border-radius:8px;cursor:pointer;outline:none}
+  .textsel select:focus{border-color:var(--gold-dim)}
+  .textsel option{background:var(--bg);color:var(--text)}
+  .starthint{text-align:center;color:var(--sub);font-size:14px;margin-top:22px;height:20px;transition:opacity .2s}
+  .typing ~ .starthint, .starthint.hide{opacity:0}
+  .logo .greek{font-family:var(--mono);font-weight:700;font-size:28px;color:var(--gold);letter-spacing:1px}
+  .logo .word{font-size:26px;font-weight:600;color:var(--text)}
+  .logo small{display:block;font-size:10px;color:var(--sub);letter-spacing:2px;text-transform:uppercase;margin-top:-2px}
+  nav{display:flex;gap:6px}
+  nav button{background:none;border:0;color:var(--sub);font-size:15px;padding:8px 10px;border-radius:8px;transition:color .15s}
+  nav button:hover{color:var(--text)}
+  nav button.on{color:var(--gold)}
+  .namebox{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--sub);font-size:13px}
+  .namebox input{background:var(--bg2);border:1px solid transparent;color:var(--text);font-family:var(--mono);font-size:14px;padding:7px 10px;border-radius:8px;width:140px;outline:none}
+  .namebox input:focus{border-color:var(--gold-dim)}
+  .sync{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--sub2)}
+  .dot.shared{background:var(--ok)} .dot.local{background:var(--gold)}
+
+  .view{display:none;flex:1;flex-direction:column}
+  .view.on{display:flex}
+
+  /* test */
+  #test{padding-top:4vh}
+  .live{margin-top:auto;font-family:var(--mono);color:var(--gold);font-size:22px;display:flex;gap:28px;height:32px;margin-bottom:10px;opacity:0;transition:opacity .2s}
+  .live.show{opacity:1}
+  .live span em{font-style:normal;color:var(--gold-dim);font-size:14px;margin-left:4px}
+  .box{position:relative;cursor:text}
+  .lines{overflow:hidden;height:calc(3 * 1.65em);font-family:var(--mono);font-size:27px;line-height:1.65em}
+  #words{position:relative;transition:transform .18s ease}
+  .word{display:inline-block;white-space:pre}
+  .ch{color:var(--sub);transition:color .06s}
+  .ch.c{color:var(--gold)}
+  .ch.x{color:var(--err)}
+  .ch.sp.x{background:var(--err-dim);border-radius:3px}
+  #caret{position:absolute;width:3px;border-radius:2px;background:var(--text);transition:left .07s linear, top .07s linear;animation:blink 1s step-end infinite}
+  .typing #caret{animation:none}
+  @keyframes blink{50%{opacity:0}}
+  .blurmsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--text);font-size:16px;gap:10px}
+  .blurred .lines{filter:blur(5px);opacity:.5}
+  .blurred .blurmsg{display:flex}
+  .blurred #caret{display:none}
+  #hidden{position:absolute;opacity:0;left:0;top:0;width:1px;height:1px;border:0;padding:0;pointer-events:none}
+  .actions{display:flex;justify-content:center;margin-top:34px}
+  .iconbtn{background:none;border:0;color:var(--sub);font-size:14px;padding:10px 18px;border-radius:8px;display:inline-flex;gap:8px;align-items:center}
+  .iconbtn:hover{color:var(--text);background:var(--bg2)}
+  .touch .touchonly{display:block !important}
+  .hints{margin-top:auto;padding-top:40px;text-align:center;color:var(--sub);font-size:12px;line-height:2}
+  kbd{background:var(--bg3);color:var(--text);padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:11px}
+  .source{font-size:12px;color:var(--sub);margin-top:16px;font-family:var(--mono)}
+
+  /* results */
+  #results{justify-content:center}
+  .res-top{display:grid;grid-template-columns:170px 1fr;gap:28px;align-items:center}
+  .big .lbl{color:var(--sub);font-size:28px;line-height:1}
+  .big .val{color:var(--gold);font-family:var(--mono);font-size:64px;line-height:1.1;margin-bottom:12px}
+  .pb{display:inline-block;background:var(--gold);color:var(--bg);font-size:11px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+  .chart{width:100%;height:220px}
+  .chart text{font-family:var(--mono);font-size:11px;fill:var(--sub)}
+  .res-row{display:flex;flex-wrap:wrap;gap:36px;margin-top:22px}
+  .stat .lbl{color:var(--sub);font-size:14px}
+  .stat .val{color:var(--gold);font-family:var(--mono);font-size:30px}
+  .stat .val.sm{font-size:16px;padding-top:12px;color:var(--text)}
+  .post{margin-top:26px;background:var(--bg2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--sub)}
+  .post input{background:var(--bg3);border:0;color:var(--text);font-family:var(--mono);padding:8px 10px;border-radius:7px;outline:none;width:200px}
+  .btn{background:var(--gold);color:var(--bg);border:0;border-radius:7px;padding:8px 14px;font-weight:600;font-size:13px}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.ghost{background:var(--bg3);color:var(--text);font-weight:400}
+
+  /* tables */
+  h2{font-weight:400;color:var(--sub);font-size:15px;text-transform:lowercase;letter-spacing:.5px;margin:28px 0 12px}
+  h2:first-child{margin-top:20px}
+  .note{color:var(--sub);font-size:13px;background:var(--bg2);border-left:3px solid var(--gold-dim);padding:10px 14px;border-radius:6px;margin-top:16px;line-height:1.5}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;color:var(--sub);font-weight:400;font-size:12px;padding:8px 12px}
+  td{padding:11px 12px;font-family:var(--mono)}
+  tbody tr:nth-child(odd) td{background:var(--bg2)}
+  tbody tr td:first-child{border-radius:8px 0 0 8px}
+  tbody tr td:last-child{border-radius:0 8px 8px 0}
+  td.name{font-family:var(--ui)}
+  td.r{text-align:right} th.r{text-align:right}
+  tr.me td{color:var(--gold)}
+  .rank1{color:var(--gold)} .muted{color:var(--sub)}
+  .crown{color:var(--gold);margin-right:6px}
+  .empty{color:var(--sub);text-align:center;padding:30px;font-size:14px}
+  .del{background:none;border:0;color:var(--sub2);font-size:12px;padding:2px 6px;border-radius:5px}
+  .del:hover{color:var(--err)} .del.arm{color:var(--err);background:var(--err-dim)}
+  .feed{display:flex;flex-direction:column;gap:6px}
+  .feed div{display:flex;gap:14px;font-size:13px;padding:8px 12px;background:var(--bg2);border-radius:8px}
+  .feed .n{flex:1;color:var(--text)} .feed .w{font-family:var(--mono);color:var(--gold)} .feed .t{font-family:var(--mono);color:var(--sub)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .card{background:var(--bg2);border-radius:10px;padding:14px 16px}
+  .card .lbl{color:var(--sub);font-size:12px}
+  .card .val{color:var(--gold);font-family:var(--mono);font-size:26px;margin-top:4px}
+  .two{display:grid;grid-template-columns:1.6fr 1fr;gap:28px}
+  @media (max-width:820px){
+    .logo img{width:44px;height:44px} .rose .logo img{width:38px;height:52px}
+    header{gap:14px}
+    .wrap{padding:20px 16px}
+    .lines{font-size:20px}
+    .res-top{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+    .namebox{margin-left:0}
+    .hide-sm{display:none}
+  }
+  /* exec board */
+  #exec{padding-top:18px}
+  .seg{display:inline-flex;background:var(--bg2);border-radius:10px;padding:4px;gap:2px;flex-wrap:wrap}
+  .seg button{background:none;border:0;color:var(--sub);font-size:14px;padding:7px 14px;border-radius:7px}
+  .seg button:hover{color:var(--text)}
+  .seg button.on{background:var(--gold);color:var(--bg);font-weight:600}
+  .seg.sm button{font-size:12px;padding:5px 10px}
+  .exbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+  .exbar .lab{color:var(--sub);font-size:13px;margin-right:4px}
+  .exintro{color:var(--sub);font-size:14px;margin:0 0 18px;line-height:1.5}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .pcard{background:var(--bg2);border-radius:12px;padding:16px 18px;cursor:default;border:1px solid transparent;transition:border-color .15s}
+  .pcard.quizzable{cursor:pointer}
+  .pcard.quizzable:hover{border-color:var(--gold-dim)}
+  .pcard .nm{font-size:18px;font-weight:600;color:var(--text)}
+  .pcard .pos{font-size:14px;color:var(--gold);margin-top:6px;min-height:20px}
+  .pcard .pc{display:inline-block;font-size:12px;color:var(--text);background:var(--bg3);border-radius:20px;padding:3px 10px;margin-top:10px}
+  .pcard .tags{display:flex;gap:6px;margin-top:8px;font-size:11px}
+  .pcard .tags span{color:var(--gold);border:1px solid var(--gold-dim);border-radius:20px;padding:2px 8px}
+  .clsearch{background:var(--bg2);border:1px solid transparent;color:var(--text);font-family:var(--ui);font-size:14px;padding:8px 12px;border-radius:8px;outline:none;width:220px}
+  .clsearch:focus{border-color:var(--gold-dim)}
+  .clsec{background:var(--bg2);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+  .clsec h4{margin:0;font-size:20px;color:var(--gold);font-weight:600;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+  .clsec h4 span{font-size:13px;color:var(--sub);font-weight:400}
+  .clsec .pe{font-size:13px;color:var(--text);margin:6px 0 12px}
+  .clsec .pe b{color:var(--sub);font-weight:400}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:13px;background:var(--bg3);border-radius:20px;padding:4px 11px;color:var(--text)}
+  .chip.exec{background:var(--gold);color:var(--bg);font-weight:600}
+  .chip.hit{outline:2px solid var(--ok)}
+  .chip.dim{opacity:.25}
+  .chip.hid{color:transparent;background:var(--bg3);cursor:pointer;min-width:90px}
+  .chip.hid:hover{outline:1px dashed var(--sub)}
+  .clsec.hidehead h4 .nmx{color:transparent;background:var(--bg3);border-radius:6px;cursor:pointer}
+  .flash select{margin-top:0}
+  .ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .gcard{background:var(--bg2);border-radius:12px;padding:16px 10px 14px;text-align:center;border:1px solid transparent}
+  .gcard.quizzable{cursor:pointer} .gcard.quizzable:hover{border-color:var(--gold-dim)}
+  .gcard .gl{font-family:'Times New Roman',Georgia,serif;font-size:44px;color:var(--gold);line-height:1.1}
+  .gcard .gn{font-size:16px;margin-top:6px;color:var(--text)}
+  .gcard .gi{font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:4px}
+  .gcard .blank{display:inline-block;min-width:60px}
+  .flash .glyph{font-family:'Times New Roman',Georgia,serif;font-size:96px;color:var(--gold);line-height:1}
+  .qprompt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:56px;color:var(--gold);display:block;margin:8px 0 4px}
+  .qopt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:28px;color:var(--gold)}
+  .blank{color:var(--sub2) !important;font-style:italic;font-weight:400 !important}
+  .pc.blank{background:transparent;border:1px dashed var(--sub2)}
+  .grouph{color:var(--gold);font-size:15px;margin:26px 0 10px;display:flex;gap:10px;align-items:baseline}
+  .grouph:first-child{margin-top:0}
+  .grouph span{color:var(--sub);font-size:12px}
+  .flashwrap{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:10px}
+  .flash{width:min(560px,100%);min-height:260px;background:var(--bg2);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;cursor:pointer;border:2px solid var(--bg3);transition:border-color .2s, transform .15s;user-select:none}
+  .flash:hover{border-color:var(--gold-dim)}
+  .flash.back{border-color:var(--gold)}
+  .flash .f1{font-size:32px;font-weight:600;color:var(--text);line-height:1.25}
+  .flash .f2{font-size:22px;color:var(--gold);margin-top:14px}
+  .flash .f3{display:inline-block;font-size:14px;background:var(--bg3);border-radius:20px;padding:5px 14px;margin-top:14px}
+  .flash .tip{color:var(--sub);font-size:12px;margin-top:22px}
+  .fcnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .fcnav .count{font-family:var(--mono);color:var(--sub);min-width:70px;text-align:center}
+  .quiz{max-width:720px;margin:0 auto;width:100%}
+  .qtop{display:flex;justify-content:space-between;font-family:var(--mono);color:var(--gold);font-size:18px;margin-bottom:10px}
+  .qtally{display:flex;gap:18px}
+  .qtally .ok{color:var(--gold)} .qtally .bad{color:var(--err)}
+  .qbar{height:6px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:26px}
+  .qbar div{height:100%;background:var(--gold);transition:width .3s}
+  .qprompt{font-size:26px;line-height:1.35;margin-bottom:24px}
+  .qprompt b{color:var(--gold);font-weight:600}
+  .qopts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .qopt{background:var(--bg2);border:2px solid transparent;color:var(--text);border-radius:12px;padding:16px 18px;font-size:16px;text-align:left;display:flex;gap:12px;align-items:center;transition:border-color .12s, background .12s}
+  .qopt:hover:not(:disabled){border-color:var(--gold-dim)}
+  .qopt kbd{flex:none}
+  .qopt.right{border-color:var(--ok);background:#3f5a63}
+  .qopt.wrong{border-color:var(--err);background:var(--err-dim)}
+  .qopt:disabled{cursor:default}
+  .qctrl{display:flex;gap:8px;justify-content:flex-end;margin:-12px 0 16px;flex-wrap:wrap}
+  .qctrl .btn{font-size:12px;padding:6px 12px}
+  .qctrl .btn.arm{background:var(--err-dim);color:var(--text)}
+  .qpaused{text-align:center;background:var(--bg2);border-radius:14px;padding:40px 20px}
+  .qpaused .ptitle{font-size:30px;font-weight:600;color:var(--gold)}
+  .qpaused p{color:var(--sub);margin:10px 0 22px}
+  .qpaused .qctrl{margin:0}
+  .qpaused .qctrl .btn{font-size:14px;padding:9px 16px}
+  .qstart{text-align:center;padding:40px 0}
+  .qstart h3{font-size:30px;font-weight:600;margin:0 0 10px}
+  .qstart p{color:var(--sub);margin:0 0 26px;line-height:1.6}
+  .qscore{font-family:var(--mono);font-size:72px;color:var(--gold);line-height:1}
+  .missed{margin-top:22px;display:flex;flex-direction:column;gap:8px;text-align:left}
+  .missed div{background:var(--bg2);border-radius:10px;padding:12px 16px;font-size:14px;line-height:1.5}
+  .missed .you{color:var(--err)} .missed .ans{color:var(--ok)}
+  @media (max-width:820px){ .qopts{grid-template-columns:1fr} .qprompt{font-size:21px} .flash .f1{font-size:26px} }
+  /* phones */
+  html{-webkit-text-size-adjust:100%}
+  body{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  @media (max-width:820px){
+    header{display:grid;grid-template-columns:1fr auto;gap:12px 10px;align-items:center}
+    header .logo{grid-row:1;grid-column:1;gap:8px}
+    header .namebox{grid-row:1;grid-column:2;justify-self:end;margin:0}
+    header .textsel{grid-row:2;grid-column:1 / -1}
+    header .textsel select{flex:1;font-size:16px}
+    header nav{grid-row:3;grid-column:1 / -1;justify-content:space-between}
+    nav button{font-size:16px;padding:8px 6px}
+    #synctxt{display:none}
+    .namebox input{width:118px;font-size:16px;padding:7px 9px}
+    .logo .greek{font-size:21px} .logo .word{font-size:19px} .logo small{font-size:8px;letter-spacing:1.2px}
+    .logo img{width:40px;height:40px} .rose .logo img{width:34px;height:46px}
+    .wrap{padding:14px 14px 20px}
+    #test{padding-top:0}
+    .live{font-size:18px;gap:18px}
+    .post input, .clsearch, .textsel select{font-size:16px}
+    .clsearch{width:100%}
+    .exbar{gap:12px}
+    .big .val{font-size:52px}
+    .chart{height:160px}
+    .flash{min-height:230px;padding:24px 18px}
+    .qopt{padding:15px 16px;font-size:16px}
+    .qprompt .glyph{font-size:48px}
+  }
+  #hidden{font-size:16px}
+  @media (pointer:coarse){
+    .keys, .qopt kbd, .qstart kbd, #next kbd, #qAgain kbd{display:none}
+  }
+  footer{color:var(--sub2);font-size:11px;text-align:center;padding:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><img id="logoImg" src="logo-seal.png" alt="Delta Sigma Pi seal"><div class="lt"><span class="greek">ΔΣΠ</span><div><span class="word">type</span><small id="logoSub">mission statement</small></div></div></div>
+    <nav>
+      <button data-v="test" class="on" id="navFirst">type</button>
+      <button data-v="board">leaderboard</button>
+      <button data-v="history">history</button>
+    </nav>
+    <label class="textsel">text <select id="textSel"><option value="mission">Mission statement</option><option value="rose">Rose of Deltasig</option><option value="greek">Greek Letters</option><option value="exec">Executive Board 26’</option><option value="exec25">Executive Board 25’</option><option value="classes">Pledge Classes</option></select></label>
+    <div class="namebox">
+      <span class="sync" id="sync" title="Leaderboard status"><span class="dot" id="syncdot"></span><span id="synctxt">connecting…</span></span>
+      <input id="name" aria-label="Your name" maxlength="24" placeholder="your name" autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <!-- TEST -->
+  <section class="view on" id="test">
+    <div class="live" id="live">
+      <span id="lTime">0<em>s</em></span><span id="lWpm">0<em>wpm</em></span><span id="lAcc">100<em>%</em></span><span id="lProg">0/0<em>words</em></span>
+    </div>
+    <div class="box" id="box">
+      <div class="lines"><div id="words"><div id="caret"></div></div></div>
+      <div class="blurmsg">🖱 Click here or press any key to focus</div>
+      <input id="hidden" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Typing input">
+    </div>
+    <div class="starthint" id="startHint">Start typing to begin. On a phone or tablet, tap the text first.</div>
+    <div class="actions"><button class="iconbtn" id="restart" title="Restart (Tab)">↻ restart</button></div>
+    <div class="hints">
+      <div class="keys"><kbd>tab</kbd> or <kbd>esc</kbd> restart &nbsp;·&nbsp; <kbd>backspace</kbd> fix a mistake &nbsp;·&nbsp; <kbd>ctrl</kbd>+<kbd>backspace</kbd> delete a whole word</div><div>The timer starts on your first keystroke. Gold letters are right, pink ones are mistakes.</div><div class="touchonly" style="display:none">Tap ↻ restart any time to start over.</div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="view" id="results">
+    <div class="res-top">
+      <div class="big">
+        <div id="pbBadge"></div>
+        <div class="lbl">wpm</div><div class="val" id="rWpm">0</div>
+        <div class="lbl">acc</div><div class="val" id="rAcc">0%</div>
+      </div>
+      <svg class="chart" id="rChart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="res-row">
+      <div class="stat"><div class="lbl">raw</div><div class="val" id="rRaw">0</div></div>
+      <div class="stat"><div class="lbl">consistency</div><div class="val" id="rCons">0%</div></div>
+      <div class="stat"><div class="lbl">characters</div><div class="val" id="rChars" title="correct / incorrect">0/0</div></div>
+      <div class="stat"><div class="lbl">errors</div><div class="val" id="rErr">0</div></div>
+      <div class="stat"><div class="lbl">time</div><div class="val" id="rTime">0s</div></div>
+      <div class="stat"><div class="lbl">completed</div><div class="val sm" id="rTs"></div></div>
+    </div>
+    <div class="post" id="post"></div>
+    <div class="actions">
+      <button class="iconbtn" id="next">↻ next test <kbd>tab</kbd></button>
+      <button class="iconbtn" id="toBoard">🏆 leaderboard</button>
+    </div>
+  </section>
+
+  <!-- EXEC BOARD -->
+  <section class="view" id="exec">
+    <div class="exbar"><div class="seg" id="exTabs"><button data-t="study">study sheet</button><button data-t="flash">flashcards</button><button data-t="quiz">quiz</button></div></div>
+    <div id="exBody"></div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="view" id="board">
+    <div class="two">
+      <div>
+        <h2 id="boardTitle">all-time leaderboard · best run per person</h2>
+        <table>
+          <thead id="boardHead"><tr><th>#</th><th>name</th><th class="r">wpm</th><th class="r">acc</th><th class="r hide-sm">raw</th><th class="r hide-sm">time</th><th class="r hide-sm">tests</th><th class="r">set</th><th></th></tr></thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+        <div id="boardNote"></div>
+      </div>
+      <div>
+        <h2>recent runs</h2>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="view" id="history">
+    <h2 id="histTitle">your stats</h2>
+    <div class="cards" id="cards"></div>
+    <h2>wpm over your tests</h2>
+    <svg class="chart" id="hChart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
+    <h2>every run, timestamped</h2>
+    <table>
+      <thead id="histHead"><tr><th>#</th><th>wpm</th><th>acc</th><th class="hide-sm">raw</th><th class="hide-sm">consistency</th><th>time</th><th class="hide-sm">errors</th><th class="r">date &amp; time</th></tr></thead>
+      <tbody id="histBody"></tbody>
+    </table>
+  </section>
+</div>
+<footer id="foot">ΔΣΠ type · text: the Delta Sigma Pi purpose statement</footer>
+
+<script>
+const TEXTS = {
+  mission: {name:'Mission statement', sub:'mission statement', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores', foot:'text: the Delta Sigma Pi purpose statement',
+    text:"Delta Sigma Pi is a professional fraternity organized to foster the study of business in universities; to encourage scholarship, social activity and the association of students for their mutual advancement by research and practice; to promote closer affiliation between the commercial world and students of commerce, and to further a higher standard of commercial ethics and culture and the civic and commercial welfare of the community."},
+  rose: {name:'Rose of Deltasig', sub:'rose of deltasig', img:'logo-rose.png', alt:'Rose of Delta Sig sheet music cover', coll:'scores-rose', foot:'text: chorus of Rose of Deltasig, words and music by Paul H. Coughlin (Mu Chapter)',
+    text:"Rose of Deltasig I love you, Rose of Delta Sigma Pi, When the shades of night are falling I dream of days gone by; As I go thru life's long journey, Memories will never die, I will always hear you calling, Rose of Delta Sigma Pi."},
+  classes: {name:'Pledge Classes', sub:'pledge classes', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-classes', quiz:true, foot:'study mode: every pledge class from Zeta Delta to Zeta Lambda, with pledge educators', text:''},
+  greek: {name:'Greek Letters', sub:'greek letters', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-greek', quiz:true, foot:'study mode: all 24 letters of the Greek alphabet', text:''},
+  exec25: {name:'Executive Board 25’', sub:'executive board 25’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec25', quiz:true, foot:'study mode: the 2025 executive board, their positions and pledge classes', text:''},
+  exec: {name:'Executive Board 26’', sub:'executive board 26’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec', quiz:true, foot:'study mode: the Fall 2026 executive board, their positions and pledge classes', text:''}
+};
+let tkey = 'mission', TEXT = TEXTS.mission.text, WORD_COUNT = TEXT.split(' ').length;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = (v, d=0) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
+
+/* ---------- local storage (best effort) ---------- */
+const LS_KEY = 'dsp-type-v1';
+function loadLocal(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; } }
+function saveLocal(){ try { localStorage.setItem(LS_KEY, JSON.stringify(local)); } catch {} }
+const local = Object.assign({name:'', runs:[]}, loadLocal());
+if (local.text in TEXTS) tkey = local.text;
+const runText = r => (r.text in TEXTS) ? r.text : 'mission';
+function applyText(){
+  const t = TEXTS[tkey];
+  TEXT = t.text; WORD_COUNT = TEXT.split(' ').length;
+  document.body.classList.toggle('rose', tkey === 'rose');
+  $('#logoImg').src = t.img; $('#logoImg').alt = t.alt;
+  $('#logoSub').textContent = t.sub; $('#foot').textContent = 'ΔΣΠ type · ' + t.foot;
+  $('#textSel').value = tkey;
+  $('#boardTitle').textContent = 'leaderboard · ' + t.name.toLowerCase() + ' · best run per person';
+  $('#histTitle').textContent = 'your stats · ' + t.name.toLowerCase() + (t.quiz ? ' quiz' : '');
+  if (t.quiz) $('#boardTitle').textContent = 'leaderboard · ' + t.name.toLowerCase() + ' quiz · best score per person';
+  $('#navFirst').textContent = t.quiz ? 'study' : 'type';
+}
+applyText();
+$('#textSel').addEventListener('change', e => {
+  tkey = e.target.value; local.text = tkey; ex.revealed.clear(); saveLocal(); applyText(); e.target.blur();
+  const v = view; reset(); show(v === 'board' || v === 'history' ? v : 'test');
+});
+
+/* ---------- views ---------- */
+let view = 'test';
+function show(v){
+  if (v === 'test' && TEXTS[tkey].quiz) v = 'exec';
+  if (v === 'results' && TEXTS[tkey].quiz) v = 'exec';
+  view = v;
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === v));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v || ((v==='results' || v==='exec') && b.dataset.v==='test')));
+  if (v === 'board') renderBoard();
+  if (v === 'history') renderHistory();
+  if (v === 'test') requestAnimationFrame(placeCaret);
+  if (v === 'exec') renderExec(); else pauseAllQuizzes();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => { if (b.dataset.v==='test') { reset(); } show(b.dataset.v); b.blur(); });
+
+/* ---------- name ---------- */
+const nameEl = $('#name');
+nameEl.value = local.name || '';
+let nameTimer;
+nameEl.addEventListener('input', () => {
+  local.name = nameEl.value.trim().slice(0,24); saveLocal();
+  clearTimeout(nameTimer); nameTimer = setTimeout(syncName, 800);
+});
+nameEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') { nameEl.blur(); e.preventDefault(); } e.stopPropagation(); });
+
+/* ---------- test engine ---------- */
+const wordsEl = $('#words'), caret = $('#caret'), box = $('#box'), hidden = $('#hidden');
+let chars = [], st, ticker;
+
+function build(){
+  wordsEl.querySelectorAll('.word').forEach(n => n.remove());
+  chars = [];
+  const parts = TEXT.split(' ');
+  const frag = document.createDocumentFragment();
+  parts.forEach((w, wi) => {
+    const ws = document.createElement('span'); ws.className = 'word';
+    const s = wi < parts.length - 1 ? w + ' ' : w;
+    for (const ch of s){
+      const c = document.createElement('span');
+      c.className = 'ch' + (ch === ' ' ? ' sp' : '');
+      c.textContent = ch; ws.appendChild(c); chars.push(c);
+    }
+    frag.appendChild(ws);
+  });
+  wordsEl.appendChild(frag);
+}
+
+function reset(){
+  clearInterval(ticker);
+  st = {typed:[], keys:0, correctKeys:0, errors:0, start:0, startWall:0, samples:[], secKeys:0, secErrors:0, lastSec:0, done:false};
+  build();
+  $('#live').classList.remove('show'); $('#startHint').classList.remove('hide');
+  box.classList.remove('typing');
+  wordsEl.style.transform = 'translateY(0)';
+  updateLive();
+  if (view !== 'test') show('test'); else requestAnimationFrame(placeCaret);
+}
+
+function lineHeight(){ return parseFloat(getComputedStyle(wordsEl).lineHeight) || 44; }
+function placeCaret(){
+  if (!chars.length) return;
+  const i = st.typed.length;
+  let el = chars[Math.min(i, chars.length-1)];
+  let left = el.offsetLeft, top = el.offsetTop;
+  if (i >= chars.length) left += el.offsetWidth;
+  const L = lineHeight();
+  caret.style.left = (left - 1) + 'px';
+  caret.style.top = (top + L*0.18) + 'px';
+  caret.style.height = (L*0.64) + 'px';
+  const line = Math.round(top / L);
+  wordsEl.style.transform = `translateY(${-Math.max(0, line - 1) * L}px)`;
+}
+window.addEventListener('resize', () => requestAnimationFrame(placeCaret));
+
+function correctCount(){ let n = 0; for (let i = 0; i < st.typed.length; i++) if (st.typed[i] === TEXT[i]) n++; return n; }
+function elapsed(){ return st.start ? (performance.now() - st.start) : 0; }
+
+function pushSample(final){
+  const ms = elapsed(), secs = ms/1000;
+  const span = final ? secs - st.lastSec : 1;
+  if (final && span < 0.3 && st.samples.length){ st.samples[st.samples.length-1].e += st.secErrors; return; }
+  const t = final ? secs : st.lastSec + 1;
+  st.samples.push({ t: +t.toFixed(2), w: +(correctCount()/5/(t/60)).toFixed(1), r: +((st.secKeys/5)/(span/60)).toFixed(1), e: st.secErrors });
+  st.secKeys = 0; st.secErrors = 0; st.lastSec = Math.floor(t);
+}
+
+function startTimer(){
+  st.start = performance.now(); st.startWall = Date.now();
+  $('#live').classList.add('show'); box.classList.add('typing'); $('#startHint').classList.add('hide');
+  ticker = setInterval(() => {
+    while (elapsed()/1000 >= st.lastSec + 1) pushSample(false);
+    updateLive();
+  }, 100);
+}
+
+function updateLive(){
+  const ms = elapsed();
+  const wpm = ms > 1000 ? Math.round(correctCount()/5/(ms/60000)) : 0;
+  const acc = st.keys ? Math.floor(st.correctKeys/st.keys*100) : 100;
+  const doneWords = TEXT.slice(0, st.typed.length).split(' ').length - 1;
+  $('#lTime').innerHTML = Math.floor(ms/1000) + '<em>s</em>';
+  $('#lWpm').innerHTML = wpm + '<em>wpm</em>';
+  $('#lAcc').innerHTML = acc + '<em>%</em>';
+  $('#lProg').innerHTML = doneWords + '/' + WORD_COUNT + '<em>words</em>';
+}
+
+function typeChar(ch){
+  if (st.done || view !== 'test') return;
+  const i = st.typed.length;
+  if (i >= TEXT.length) return;
+  if (!st.start) startTimer();
+  st.typed.push(ch); st.keys++; st.secKeys++;
+  const ok = ch === TEXT[i];
+  if (ok) st.correctKeys++; else { st.errors++; st.secErrors++; }
+  chars[i].classList.add(ok ? 'c' : 'x');
+  if (st.typed.length === TEXT.length) finish();
+  else { placeCaret(); }
+}
+
+function backspace(word){
+  if (st.done || !st.typed.length) return;
+  const del = () => { const i = st.typed.length - 1; st.typed.pop(); chars[i].classList.remove('c','x'); };
+  del();
+  if (word) while (st.typed.length && TEXT[st.typed.length-1] !== ' ') del();
+  placeCaret(); updateLive();
+}
+
+/* keyboard */
+document.addEventListener('keydown', e => {
+  if (e.target === nameEl || e.target.tagName === 'SELECT' || (e.target.tagName === 'INPUT' && e.target !== hidden)) return;
+  if (view === 'exec'){ execKey(e); return; }
+  if (e.key === 'Tab'){ e.preventDefault(); reset(); return; }
+  if (view === 'results' && e.key === 'Enter'){ e.preventDefault(); reset(); return; }
+  if (view !== 'test') return;
+  if (e.key === 'Escape'){ e.preventDefault(); reset(); return; }
+  if (e.key === 'Backspace'){ e.preventDefault(); backspace(e.ctrlKey || e.altKey || e.metaKey); return; }
+  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !(e.altKey && !e.key.match(/\S/))){
+    e.preventDefault(); typeChar(e.key);
+  }
+});
+/* mobile soft keyboards */
+const SENT = '  ';
+function primeHidden(){ hidden.value = SENT; try { hidden.setSelectionRange(SENT.length, SENT.length); } catch {} }
+hidden.addEventListener('focus', primeHidden);
+hidden.addEventListener('input', () => {
+  const v = hidden.value;
+  if (v.length < SENT.length) backspace(false);
+  else for (const ch of v.slice(SENT.length)) typeChar(ch);
+  primeHidden();
+});
+document.addEventListener('paste', e => { if (e.target !== nameEl && !(e.target.classList && e.target.closest('.post'))) e.preventDefault(); });
+box.addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
+$('#startHint').addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
+function setFocus(f){ box.classList.toggle('blurred', !f); }
+window.addEventListener('blur', () => setFocus(false));
+window.addEventListener('focus', () => setFocus(true));
+document.addEventListener('mousedown', () => setFocus(true));
+$('#restart').onclick = e => { e.currentTarget.blur(); reset(); };
+$('#next').onclick = e => { e.currentTarget.blur(); reset(); };
+$('#toBoard').onclick = () => show('board');
+
+/* ---------- finishing ---------- */
+function kogasa(cov){ return 100 * (1 - Math.tanh(cov + cov**3/3 + cov**5/5)); }
+function finish(){
+  st.done = true; clearInterval(ticker);
+  if (elapsed() < 2000){ reset(); return; }
+  pushSample(true);
+  const ms = elapsed(), min = ms/60000;
+  const correct = correctCount(), incorrect = TEXT.length - correct;
+  const raws = st.samples.map(s => s.r);
+  const mean = raws.reduce((a,b)=>a+b,0) / (raws.length || 1);
+  const sd = Math.sqrt(raws.reduce((a,b)=>a+(b-mean)**2,0) / (raws.length || 1));
+  const run = {
+    wpm: +(correct/5/min).toFixed(2),
+    raw: +(st.keys/5/min).toFixed(2),
+    acc: +(st.correctKeys/st.keys*100).toFixed(2),
+    cons: +Math.max(0, mean ? kogasa(sd/mean) : 0).toFixed(1),
+    time: +(ms/1000).toFixed(2),
+    correct, incorrect, errors: st.errors, keys: st.keys,
+    text: tkey, started: st.startWall, ts: Date.now(),
+    samples: st.samples
+  };
+  const prevBest = bestOf(allMyRuns());
+  local.runs.push(run); local.runs = local.runs.slice(-200); saveLocal();
+  const isPB = !prevBest || run.wpm > prevBest.wpm;
+  renderResults(run, isPB);
+  postRun(run);
+  show('results');
+}
+
+function fmtTs(ts){ return new Date(ts).toLocaleString(undefined, {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit', second:'2-digit'}); }
+function fmtShort(ts){ return new Date(ts).toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}); }
+function ago(ts){
+  const s = (Date.now() - ts)/1000;
+  if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago'; if (s < 86400*30) return Math.floor(s/86400) + 'd ago';
+  return new Date(ts).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+}
+
+function renderResults(run, isPB){
+  $('#pbBadge').innerHTML = isPB ? '<span class="pb">★ personal best</span>' : '';
+  $('#rWpm').textContent = Math.round(run.wpm);
+  $('#rAcc').textContent = Math.round(run.acc) + '%';
+  $('#rRaw').textContent = Math.round(run.raw);
+  $('#rCons').textContent = Math.round(run.cons) + '%';
+  $('#rChars').textContent = run.correct + '/' + run.incorrect;
+  $('#rErr').textContent = run.errors;
+  $('#rTime').textContent = run.time.toFixed(1) + 's';
+  $('#rTs').textContent = fmtTs(run.ts);
+  $('#rWpm').title = run.wpm.toFixed(2) + ' wpm';
+  $('#rAcc').title = run.acc.toFixed(2) + '%';
+  $('#rChart').innerHTML = runChart(run.samples);
+  renderPost();
+}
+
+/* ---------- charts (hand-drawn SVG) ---------- */
+function niceStep(max){ const raw = max/5, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw/p; return (f < 1.5 ? 1 : f < 3.5 ? 2.5 : f < 7.5 ? 5 : 10) * p; }
+function runChart(samples){
+  const W = 800, H = 220, pl = 40, pr = 12, pt = 14, pb = 28;
+  if (!samples || !samples.length) return '';
+  const maxT = samples[samples.length-1].t;
+  const maxY = Math.max(10, ...samples.map(s => Math.max(s.w, s.r))) * 1.12;
+  const x = t => pl + (t / (maxT || 1)) * (W - pl - pr);
+  const y = v => pt + (1 - v / maxY) * (H - pt - pb);
+  let g = '';
+  const step = niceStep(maxY);
+  for (let v = 0; v <= maxY; v += step){
+    g += `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#5f3c9e" stroke-width="1"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  }
+  const tStep = Math.max(1, Math.ceil(maxT / 10));
+  for (let t = 0; t <= maxT; t += tStep) g += `<text x="${x(t)}" y="${H-8}" text-anchor="middle">${t}</text>`;
+  const path = k => samples.map((s,i) => (i?'L':'M') + x(s.t).toFixed(1) + ' ' + y(s[k]).toFixed(1)).join(' ');
+  g += `<path d="${path('r')}" fill="none" stroke="#a993d1" stroke-width="2" stroke-linejoin="round"/>`;
+  g += `<path d="${path('w')}" fill="none" stroke="#cfb53b" stroke-width="3" stroke-linejoin="round"/>`;
+  samples.forEach(s => {
+    if (s.e > 0){
+      const cx = x(s.t), cy = pt + 6, r = 4;
+      g += `<path d="M${cx-r} ${cy-r}L${cx+r} ${cy+r}M${cx+r} ${cy-r}L${cx-r} ${cy+r}" stroke="#ff8a9a" stroke-width="2"><title>${s.e} error${s.e>1?'s':''} at ${Math.round(s.t)}s</title></path>`;
+    }
+  });
+  g += `<text x="${W-pr}" y="${pt+4}" text-anchor="end" style="fill:#cfb53b">— wpm</text><text x="${W-pr-60}" y="${pt+4}" text-anchor="end">— raw</text>`;
+  return g;
+}
+
+function progressChart(runs, key='wpm', unit='wpm', minMax=10){
+  const W = 800, H = 220, pl = 40, pr = 12, pt = 14, pb = 28;
+  if (runs.length < 2) return `<text x="400" y="110" text-anchor="middle">finish a couple of ${key === 'wpm' ? 'tests' : 'quizzes'} to see your progress</text>`;
+  const maxY = Math.max(minMax, ...runs.map(r => r[key])) * 1.15;
+  const n = runs.length;
+  const x = i => pl + (i / (n-1)) * (W - pl - pr);
+  const y = v => pt + (1 - v / maxY) * (H - pt - pb);
+  let g = '';
+  const step = niceStep(maxY);
+  for (let v = 0; v <= maxY; v += step) g += `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#5f3c9e"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  // rolling best line
+  let best = 0; const pbPts = runs.map((r,i) => { best = Math.max(best, r[key]); return (i?'L':'M') + x(i).toFixed(1) + ' ' + y(best).toFixed(1); }).join(' ');
+  g += `<path d="${pbPts}" fill="none" stroke="#e2d4ff" stroke-width="2" stroke-dasharray="5 4"/>`;
+  g += `<path d="${runs.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(r[key]).toFixed(1)).join(' ')}" fill="none" stroke="#cfb53b" stroke-width="2.5" stroke-linejoin="round"/>`;
+  runs.forEach((r,i) => g += `<circle cx="${x(i)}" cy="${y(r[key])}" r="3.5" fill="#cfb53b"><title>${Math.round(r[key])} ${unit} · ${esc(fmtTs(r.ts))}</title></circle>`);
+  g += `<text x="${W-pr}" y="${pt+4}" text-anchor="end" style="fill:#cfb53b">● ${unit}</text><text x="${W-pr-70}" y="${pt+4}" text-anchor="end" style="fill:#e2d4ff">- - best</text>`;
+  return g;
+}
+
+/* ---------- shared leaderboard (db capability) ---------- */
+let db = null, user = null, uid = null, canWrite = false, isOwner = false;
+let mode = 'connecting', peopleBy = {mission:[], rose:[]}, myDocBy = {mission:null, rose:null}, writeErr = '';
+
+function setMode(m){
+  mode = m;
+  $('#syncdot').className = 'dot ' + (m === 'shared' ? 'shared' : m === 'local' ? 'local' : '');
+  $('#synctxt').textContent = m === 'shared' ? (canWrite ? 'live leaderboard' : 'live · view only') : m === 'local' ? 'this browser only' : 'connecting…';
+  if (view === 'board') renderBoard();
+  if (view === 'results' || (view === 'exec' && ex.quizBy[tkey] && ex.quizBy[tkey].done)) renderPost();
+}
+
+function slim(r){ if (TEXTS[r.text] && TEXTS[r.text].quiz) return {text:r.text, score:r.score, total:r.total, pct:r.pct, time:r.time, started:r.started, ts:r.ts}; return {text:r.text, wpm:r.wpm, raw:r.raw, acc:r.acc, cons:r.cons, time:r.time, errors:r.errors, correct:r.correct, incorrect:r.incorrect, started:r.started, ts:r.ts}; }
+function cleanRun(r){
+  if (!r || typeof r !== 'object') return null;
+  if (TEXTS[r.text] && TEXTS[r.text].quiz){
+    const total = num(r.total), score = Math.min(total, num(r.score));
+    const o = {text:r.text, score, total, pct: total ? +(score/total*100).toFixed(1) : 0, time:num(r.time), started:num(r.started), ts:num(r.ts)};
+    return (total > 0 && total <= 100 && o.ts > 0 && o.time > 0) ? o : null;
+  }
+  const o = {text: runText(r), wpm:num(r.wpm), raw:num(r.raw), acc:Math.min(100,num(r.acc)), cons:num(r.cons), time:num(r.time), errors:num(r.errors), correct:num(r.correct), incorrect:num(r.incorrect), started:num(r.started), ts:num(r.ts)};
+  return (o.wpm > 0 && o.wpm < 400 && o.ts > 0) ? o : null;
+}
+function cleanPerson(d){
+  const x = d.data() || {};
+  const runs = Array.isArray(x.runs) ? x.runs.map(cleanRun).filter(Boolean) : [];
+  const best = cleanRun(x.best) || bestOf(runs);
+  return {id:d.id, name:String(x.name || 'Anonymous').slice(0,24), best, runs, runCount:num(x.runCount, runs.length), updated:num(x.updated)};
+}
+
+async function initShared(){
+  try {
+    if (!(window.claude && typeof window.claude.use === 'function')) { setMode('local'); return; }
+    const [d, u] = await Promise.all([window.claude.use('db').catch(()=>null), window.claude.use('user').catch(()=>null)]);
+    db = d; user = u;
+    if (!db){ setMode('local'); return; }
+    if (user){
+      try { uid = await user.id(); } catch {}
+      try { isOwner = !!(await user.isOwner()); } catch {}
+      let cw = null; try { cw = await user.can('data.write'); } catch {}
+      canWrite = !!uid && cw !== false;
+      if (!local.name){
+        try { const me = await user.me(); if (me && me.name){ local.name = me.name.slice(0,24); nameEl.value = local.name; saveLocal(); } } catch {}
+      }
+    }
+    Object.keys(TEXTS).forEach(k => {
+      db.collection(TEXTS[k].coll).limit(500).onSnapshot(snap => {
+        peopleBy[k] = snap.docs.filter(d => d.exists).map(cleanPerson).filter(p => p.best);
+        myDocBy[k] = peopleBy[k].find(p => p.id === uid) || null;
+        setMode('shared');
+        if (view === 'history') renderHistory();
+      }, err => { console.warn('leaderboard unavailable', err); setMode('local'); });
+    });
+  } catch (e){ console.warn(e); setMode('local'); }
+}
+
+let chain = Promise.resolve();
+function queue(fn){ chain = chain.then(fn).catch(handleWriteErr); return chain; }
+function handleWriteErr(e){
+  const code = e && e.code;
+  if (code === 'invalid_argument' || code === 'revoked' || code === 'not_granted'){ canWrite = false; writeErr = "You can view the leaderboard, but your access level doesn't allow posting scores. Your runs are saved in this browser."; }
+  else if (code === 'quota_exceeded'){ writeErr = 'The leaderboard is full. Ask the owner to clear some entries.'; }
+  else { writeErr = "Couldn't post that score just now. It's still saved in this browser."; }
+  setMode(mode);
+}
+
+function postRun(run){
+  if (mode !== 'shared' || !canWrite || !uid || !local.name) return;
+  writeErr = '';
+  queue(async () => {
+    const k = runText(run), prev = myDocBy[k] || {runs:[], runCount:0};
+    const runs = [...prev.runs, slim(run)].slice(-100);
+    const best = better(run, prev.best) ? slim(run) : prev.best;
+    const body = {name: local.name, best, runs, runCount: (prev.runCount || 0) + 1, updated: Date.now()};
+    await db.collection(TEXTS[k].coll).doc(uid).set(body);
+    myDocBy[k] = {id: uid, ...body};
+    if (view === 'results' || view === 'exec') renderPost(true);
+  });
+}
+
+function syncName(){
+  if (mode !== 'shared' || !canWrite || !uid || !local.name) return;
+  Object.keys(TEXTS).forEach(k => {
+    const d = myDocBy[k];
+    if (d && d.name !== local.name) queue(async () => { await db.collection(TEXTS[k].coll).doc(uid).update({name: local.name}); });
+  });
+}
+
+function renderPost(justPosted){
+  const el = view === 'exec' ? $('#execPost') : $('#post');
+  if (!el) return;
+  const last = local.runs[local.runs.length-1];
+  if (mode === 'shared' && canWrite && uid){
+    if (!local.name){
+      el.style.display = 'flex';
+      el.innerHTML = `<span>Add a name to post this run to the leaderboard:</span><input id="postName" maxlength="24" placeholder="your name"><button class="btn" id="postBtn">post score</button>`;
+      const pn = $('#postName');
+      pn.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') $('#postBtn').click(); });
+      $('#postBtn').onclick = () => {
+        const v = pn.value.trim().slice(0,24); if (!v) { pn.focus(); return; }
+        local.name = v; nameEl.value = v; saveLocal(); if (last) postRun(last);
+        el.innerHTML = `<span>Posting as <b style="color:var(--text)">${esc(v)}</b>…</span>`;
+      };
+      return;
+    }
+    el.style.display = 'flex';
+    el.innerHTML = writeErr ? `<span>${esc(writeErr)}</span>` : `<span>✓ ${justPosted ? 'Posted' : 'Posting'} to the leaderboard as <b style="color:var(--text)">${esc(local.name)}</b></span>`;
+    return;
+  }
+  el.style.display = 'flex';
+  el.innerHTML = mode === 'connecting' ? '<span>Connecting to the leaderboard…</span>'
+    : `<span>${esc(writeErr || (mode === 'shared' ? "You're viewing this leaderboard read-only. Your runs are saved in this browser." : "The shared leaderboard isn't available here. Your runs are saved in this browser."))}</span>`;
+}
+
+/* ---------- leaderboard render ---------- */
+function better(a, b){
+  if (!b) return true;
+  if (TEXTS[a.text] && TEXTS[a.text].quiz) return a.pct > b.pct || (a.pct === b.pct && a.time < b.time);
+  return a.wpm > b.wpm || (a.wpm === b.wpm && a.acc > b.acc);
+}
+function bestOf(runs){ return runs.reduce((b, r) => better(r, b) ? r : b, null); }
+function allMyRuns(){
+  const map = new Map();
+  local.runs.filter(r => runText(r) === tkey).forEach(r => map.set(r.ts, r));
+  const myDoc = myDocBy[tkey];
+  if (myDoc) myDoc.runs.forEach(r => { if (!map.has(r.ts)) map.set(r.ts, r); });
+  return [...map.values()].sort((a,b) => a.ts - b.ts);
+}
+
+function renderBoard(){
+  const body = $('#boardBody'), note = $('#boardNote'), feed = $('#feed');
+  let rows;
+  if (mode === 'shared') rows = peopleBy[tkey].slice();
+  else {
+    const mine = local.runs.filter(r => runText(r) === tkey), b = bestOf(mine);
+    rows = b ? [{id:'local', name: local.name || 'you', best:b, runs:mine, runCount:mine.length}] : [];
+  }
+  rows.sort((a,b) => better(a.best, b.best) ? -1 : better(b.best, a.best) ? 1 : (a.best.ts - b.best.ts));
+  const isQ = !!TEXTS[tkey].quiz;
+  $('#boardHead').innerHTML = isQ
+    ? '<tr><th>#</th><th>name</th><th class="r">score</th><th class="r">%</th><th class="r hide-sm">time</th><th class="r hide-sm">quizzes</th><th class="r">set</th><th></th></tr>'
+    : '<tr><th>#</th><th>name</th><th class="r">wpm</th><th class="r">acc</th><th class="r hide-sm">raw</th><th class="r hide-sm">time</th><th class="r hide-sm">tests</th><th class="r">set</th><th></th></tr>';
+  if (!rows.length) body.innerHTML = `<tr><td colspan="9" class="empty">No scores yet. Be the first on the board.</td></tr>`;
+  else body.innerHTML = rows.map((p, i) => {
+    const me = p.id === uid || p.id === 'local';
+    const b = p.best;
+    return `<tr class="${me ? 'me' : ''}">
+      <td class="${i===0?'rank1':'muted'}">${i+1}</td>
+      <td class="name">${i===0?'<span class="crown">♛</span>':''}${esc(p.name)}${me?' <span class="muted">(you)</span>':''}</td>
+      ${isQ ? `<td class="r">${b.score}/${b.total}</td>
+      <td class="r">${Math.round(b.pct)}%</td>
+      <td class="r hide-sm muted">${fmtDur(b.time)}</td>` : `<td class="r">${Math.round(b.wpm)}</td>
+      <td class="r">${Math.round(b.acc)}%</td>
+      <td class="r hide-sm muted">${Math.round(b.raw)}</td>
+      <td class="r hide-sm muted">${b.time.toFixed(1)}s</td>`}
+      <td class="r hide-sm muted">${p.runCount}</td>
+      <td class="r muted" title="${esc(fmtTs(b.ts))}">${esc(ago(b.ts))}</td>
+      <td class="r">${mode==='shared' && isOwner ? `<button class="del" data-id="${esc(p.id)}" title="Remove this entry">✕</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('.del').forEach(btn => btn.onclick = () => {
+    if (!btn.classList.contains('arm')){ btn.classList.add('arm'); btn.textContent = 'remove?'; setTimeout(() => { btn.classList.remove('arm'); btn.textContent = '✕'; }, 3000); return; }
+    const id = btn.dataset.id;
+    const c = TEXTS[tkey].coll; queue(async () => { await db.collection(c).doc(id).delete(); });
+  });
+
+  let n = '';
+  if (mode === 'local') n = "The shared leaderboard isn't available in this view, so this shows the runs saved in this browser.";
+  else if (mode === 'shared' && !canWrite) n = "You're viewing this leaderboard read-only. Your runs are saved in this browser.";
+  else if (mode === 'shared' && !local.name) n = 'Set your name (top right) so your runs post to the board.';
+  note.innerHTML = n ? `<div class="note">${esc(n)}</div>` : '';
+
+  const all = [];
+  rows.forEach(p => p.runs.forEach(r => all.push({name:p.name, r})));
+  all.sort((a,b) => b.r.ts - a.r.ts);
+  feed.innerHTML = all.length ? all.slice(0, 15).map(x =>
+    `<div><span class="n">${esc(x.name)}</span>${isQ ? `<span class="w">${x.r.score}/${x.r.total}</span><span class="t">${fmtDur(x.r.time)}</span>` : `<span class="w">${Math.round(x.r.wpm)} wpm</span><span class="t">${Math.round(x.r.acc)}%</span>`}<span class="t" title="${esc(fmtTs(x.r.ts))}">${esc(fmtShort(x.r.ts))}</span></div>`
+  ).join('') : '<div><span class="n muted">No runs yet.</span></div>';
+}
+
+function fmtDur(sec){ sec = Math.round(sec); return Math.floor(sec/60) + ':' + String(sec%60).padStart(2,'0'); }
+function renderHistory(){
+  if (TEXTS[tkey].quiz) return renderQuizHistory();
+  $('#histHead').innerHTML = '<tr><th>#</th><th>wpm</th><th>acc</th><th class="hide-sm">raw</th><th class="hide-sm">consistency</th><th>time</th><th class="hide-sm">errors</th><th class="r">date &amp; time</th></tr>';
+  const runs = allMyRuns();
+  const b = bestOf(runs);
+  const last10 = runs.slice(-10);
+  const avg = k => last10.length ? last10.reduce((a,r)=>a+r[k],0)/last10.length : 0;
+  const totalTime = runs.reduce((a,r)=>a+r.time,0);
+  $('#cards').innerHTML = [
+    ['tests completed', runs.length],
+    ['best wpm', b ? Math.round(b.wpm) : '–'],
+    ['avg wpm (last 10)', runs.length ? Math.round(avg('wpm')) : '–'],
+    ['avg acc (last 10)', runs.length ? Math.round(avg('acc')) + '%' : '–'],
+    ['time typing', totalTime >= 60 ? Math.floor(totalTime/60) + 'm ' + Math.round(totalTime%60) + 's' : Math.round(totalTime) + 's'],
+  ].map(([l,v]) => `<div class="card"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#hChart').innerHTML = progressChart(runs);
+  const body = $('#histBody');
+  body.innerHTML = runs.length ? runs.slice().reverse().map((r, i) => `<tr class="${b && r.ts === b.ts ? 'me' : ''}">
+      <td class="muted">${runs.length - i}</td>
+      <td>${Math.round(r.wpm)}${b && r.ts === b.ts ? ' <span class="crown">★</span>' : ''}</td>
+      <td>${Math.round(r.acc)}%</td>
+      <td class="hide-sm muted">${Math.round(r.raw)}</td>
+      <td class="hide-sm muted">${Math.round(r.cons)}%</td>
+      <td>${r.time.toFixed(1)}s</td>
+      <td class="hide-sm muted">${r.errors}</td>
+      <td class="r muted">${esc(fmtTs(r.ts))}</td>
+    </tr>`).join('') : `<tr><td colspan="8" class="empty">No runs yet. Head to the type tab and start typing.</td></tr>`;
+}
+
+/* ---------- executive board 2026 ---------- */
+const PC = {
+  ZL:{name:'Zeta Lambda', term:'Spring 2026'},
+  ZK:{name:'Zeta Kappa', term:'Fall 2025'},
+  ZI:{name:'Zeta Iota', term:'Spring 2025'},
+  ZT:{name:'Zeta Theta', term:'Fall 2024'},
+  ZH:{name:'Zeta Eta', term:'Spring 2024'},
+  TB:{name:'Beta', term:'transfer from another chapter', ext:true}
+};
+// [name, position, abbreviation, pledge class, nationally recognized (*), 3 pillars (star)]
+const EXEC = [
+  ['Hannah Robison', 'President', '', 'ZI', 1, 0],
+  ['Analiese Kuriakose', 'Senior Vice President', 'SVP', 'ZI', 1, 0],
+  ['David Hernandez', 'VP of Finance', 'VPF', 'ZK', 1, 0],
+  ['Andrew Kien', 'VP of Chapter Operations', 'VPCO', 'ZI', 1, 0],
+  ['Daniel Storchevyi', 'Chancellor', '', 'ZK', 1, 0],
+  ['Nikolas Sirois', 'VP of Brotherhood', '', 'ZK', 0, 1],
+  ['Veronica Matsikh', 'VP of Professional Activities', 'VPPA', 'ZK', 1, 1],
+  ['Natalie Wilson', 'VP of Community Service', 'VPCS', 'ZK', 1, 1],
+  ['Siri Mullapudi', 'VP of Sponsorship & Fundraising', '', 'ZK', 0, 0],
+  ['Jimena Del Barrio Flores', 'VP of Scholarship & Awards', 'VPSA', 'ZK', 1, 0],
+  ['Victoria (Tori) Sonza', 'VP of Alumni Relations', '', 'ZI', 1, 0],
+  ['My-Linh Eberhard', 'VP of Diversity, Equity, & Inclusion', '', 'ZL', 0, 0],
+  ['Isabelle Brozenec', 'VP of Merchandise', '', 'ZI', 0, 0],
+  ['Malu Taka', 'VP of Marketing', '', 'ZL', 1, 0],
+  ['Bennett Parani', 'VP of Pledge Education', 'VPPE', 'ZI', 1, 0],
+  ['Sydney Payne', 'VP of Pledge Education', 'VPPE', 'ZI', 1, 0]
+].map(([name, title, abbr, pc, nat, pillar]) => ({name, pos: title + (abbr ? ' (' + abbr + ')' : ''), pc, nat:!!nat, pillar:!!pillar}));
+const pcLabel = k => PC[k] ? PC[k].name + ' · ' + PC[k].term : 'pledge class not listed';
+// Executive Board 25' — same position metadata as 26'
+const META = {}; EXEC.forEach(p => { META[p.pos] = {nat:p.nat, pillar:p.pillar}; });
+const EXEC25 = [
+  ['Jacob Morgan', 'President', 'ZH'],
+  ['Christopher Mundry', 'Senior Vice President (SVP)', 'ZT'],
+  ['Jose Alberto Alas Alvarenga', 'VP of Finance (VPF)', 'ZI'],
+  ['Hannah Mackenzie Robison', 'VP of Chapter Operations (VPCO)', 'ZI'],
+  ['Daniel Lopez', 'Chancellor', 'ZK'],
+  ['Phillip Johnson', 'VP of Brotherhood', 'ZT'],
+  ['Hemil Patel', 'VP of Professional Activities (VPPA)', 'TB'],
+  ['Sarah Katelyn Burbank', 'VP of Community Service (VPCS)', 'ZI'],
+  ['Natalia Osorio', 'VP of Sponsorship & Fundraising', 'ZT'],
+  ['Sophia Miranda', 'VP of Scholarship & Awards (VPSA)', 'ZK'],
+  ['Isabella Freitas', 'VP of Alumni Relations', 'ZK'],
+  ['Giuseppe Riccobono', 'VP of Diversity, Equity, & Inclusion', 'ZK'],
+  ['Angelina Fasolo', 'VP of Merchandise', 'ZK'],
+  ['Valeria Burbano', 'VP of Marketing', 'ZK']
+].map(([name, pos, pc]) => ({name, pos, pc, nat:!!(META[pos] && META[pos].nat), pillar:!!(META[pos] && META[pos].pillar)}));
+const BOARDS = {exec:{list:EXEC, label:'Fall 2026'}, exec25:{list:EXEC25, label:'2025'}};
+const B = () => (BOARDS[tkey] || BOARDS.exec).list;
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const QUIZ_LEN = 20;
+const ex = {tab:'study', hide:'none', group:'position', revealed:new Set(), fc:{order:[], board:'', i:0, back:false, front:'name'}, quizBy:{}, clock:null};
+
+document.querySelectorAll('#exTabs button').forEach(b => b.onclick = () => { ex.tab = b.dataset.t; b.blur(); renderExec(); });
+
+function renderExec(){
+  if (ex.tab !== 'quiz') pauseAllQuizzes();
+  document.querySelectorAll('#exTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === ex.tab));
+  clearInterval(ex.clock);
+  if (ex.tab === 'study') (tkey === 'classes' ? renderClassStudy : tkey === 'greek' ? renderGreekStudy : renderStudy)();
+  else if (ex.tab === 'flash') (tkey === 'classes' ? renderClassFlash : tkey === 'greek' ? renderGreekFlash : renderFlash)();
+  else renderQuiz();
+}
+
+function segHTML(id, opts, cur){ return `<div class="seg sm" id="${id}">${opts.map(([v, l]) => `<button data-v="${v}" class="${v === cur ? 'on' : ''}">${l}</button>`).join('')}</div>`; }
+function wireSeg(id, fn){ document.querySelectorAll('#' + id + ' button').forEach(b => b.onclick = () => { fn(b.dataset.v); }); }
+
+function renderStudy(){
+  const body = $('#exBody');
+  const hiding = ex.hide !== 'none';
+  let html = `<p class="exintro">All ${B().length} officers on the ${BOARDS[tkey].label} executive board. ✱ marks a nationally recognized position, and ★ marks the 3 pillar positions of DSP. To test yourself, hide a detail and tap a card to reveal it.</p>
+    <div class="exbar"><span><span class="lab">hide</span>${segHTML('sgHide', [['none','nothing'],['pos','positions'],['pc','pledge classes'],['name','names']], ex.hide)}</span>
+    <span><span class="lab">sort</span>${segHTML('sgGroup', [['position','by position'],['pc','by pledge class']], ex.group)}</span></div>`;
+  const card = (p) => {
+    const i = B().indexOf(p), open = ex.revealed.has(i);
+    const h = k => hiding && ex.hide === k && !open;
+    return `<div class="pcard ${hiding ? 'quizzable' : ''}" data-i="${i}">
+      <div class="nm ${h('name') ? 'blank' : ''}">${h('name') ? 'who is it?' : esc(p.name)}</div>
+      <div class="pos ${h('pos') ? 'blank' : ''}">${h('pos') ? 'position?' : esc(p.pos)}</div>
+      <div class="pc ${h('pc') ? 'blank' : ''}">${h('pc') ? 'pledge class?' : esc(pcLabel(p.pc))}</div>
+      ${(p.nat || p.pillar) && !(hiding && ex.hide === 'pos' && !open) ? `<div class="tags">${p.nat ? '<span title="Nationally recognized position">✱ national</span>' : ''}${p.pillar ? '<span title="One of the 3 pillar positions of DSP">★ pillar</span>' : ''}</div>` : ''}</div>`;
+  };
+  if (ex.group === 'pc'){
+    [...Object.keys(PC).filter(k => B().some(p => p.pc === k)), ...(B().some(p => !PC[p.pc]) ? [null] : [])].forEach(k => {
+      const list = B().filter(p => k ? p.pc === k : !PC[p.pc]);
+      html += `<div class="grouph">${k ? esc(PC[k].name) : 'Pledge class not listed'} <span>${k ? esc(PC[k].term) + ' · ' : ''}${list.length} on the board</span></div><div class="pgrid">${list.map(card).join('')}</div>`;
+    });
+  } else html += `<div class="pgrid">${B().map(card).join('')}</div>`;
+  body.innerHTML = html;
+  wireSeg('sgHide', v => { ex.hide = v; ex.revealed.clear(); renderStudy(); });
+  wireSeg('sgGroup', v => { ex.group = v; renderStudy(); });
+  body.querySelectorAll('.pcard.quizzable').forEach(c => c.onclick = () => {
+    const i = +c.dataset.i; ex.revealed.has(i) ? ex.revealed.delete(i) : ex.revealed.add(i); renderStudy();
+  });
+}
+
+function renderFlash(){
+  const f = ex.fc;
+  if (f.board !== tkey || f.order.length !== B().length){ f.order = B().map((_, i) => i); f.board = tkey; f.i = 0; f.back = false; }
+  const p = B()[f.order[f.i]];
+  const frontName = f.front === 'name';
+  const face = !f.back
+    ? `<div class="f1">${esc(frontName ? p.name : p.pos)}</div><div class="tip">${frontName ? 'What position do they hold, and which pledge class are they from?' : 'Who holds this position, and which pledge class are they from?'}<br>${isTouch ? 'Tap the card to flip it.' : 'Tap the card or press space to flip.'}</div>`
+    : `<div class="f1">${esc(frontName ? p.name : p.pos)}</div><div class="f2">${esc(frontName ? p.pos : p.name)}</div><div class="f3">${esc(pcLabel(p.pc))}</div>${p.nat || p.pillar ? `<div class="tip" style="margin-top:10px;color:var(--gold)">${p.nat ? '✱ nationally recognized' : ''}${p.nat && p.pillar ? ' · ' : ''}${p.pillar ? '★ 3 pillars position' : ''}</div>` : ''}<div class="tip">${isTouch ? 'swipe left or right for the next card' : '← → arrow keys to move between cards'}</div>`;
+  $('#exBody').innerHTML = `<div class="exbar"><span><span class="lab">front of card</span>${segHTML('sgFront', [['name','name'],['pos','position']], f.front)}</span></div>
+    <div class="flashwrap">
+      <div class="flash ${f.back ? 'back' : ''}" id="flashCard" role="button" tabindex="0" aria-label="Flip card">${face}</div>
+      <div class="fcnav">
+        <button class="btn ghost" id="fcPrev">← prev</button>
+        <span class="count">${f.i + 1} / ${B().length}</span>
+        <button class="btn ghost" id="fcNext">next →</button>
+        <button class="btn ghost" id="fcShuf">⤮ shuffle</button>
+      </div>
+    </div>`;
+  wireSeg('sgFront', v => { f.front = v; f.back = false; renderFlash(); });
+  $('#flashCard').onclick = flipCard;
+  $('#fcPrev').onclick = () => moveCard(-1);
+  $('#fcNext').onclick = () => moveCard(1);
+  $('#fcShuf').onclick = () => { f.order = shuffle(f.order); f.i = 0; f.back = false; renderFlash(); };
+}
+function flipCard(){ ex.fc.back = !ex.fc.back; renderFlash(); }
+function moveCard(d){ const f = ex.fc; f.i = (f.i + d + B().length) % B().length; f.back = false; renderFlash(); }
+
+function makeQuiz(){
+  const pool = [];
+  B().forEach(p => {
+    const otherPos = [...new Set(B().filter(o => o.pos !== p.pos).map(o => o.pos))];
+    const coHolders = B().filter(o => o.pos === p.pos);
+    pool.push({prompt:`What position does <b>${esc(p.name)}</b> hold?`, answer:p.pos, opts:shuffle(otherPos).slice(0,3)});
+    if (PC[p.pc]) pool.push({prompt:`Which pledge class is <b>${esc(p.name)}</b> from?`, answer:pcLabel(p.pc), opts:shuffle(Object.keys(PC).filter(k => k !== p.pc && !PC[k].ext)).slice(0,3).map(pcLabel)});
+    pool.push({prompt: coHolders.length > 1 ? `Who is one of the <b>${esc(p.pos)}</b>s?` : `Who is the <b>${esc(p.pos)}</b>?`, answer:p.name, opts:shuffle(B().filter(o => o.pos !== p.pos).map(o => o.name)).slice(0,3)});
+  });
+  const seen = new Set();
+  return shuffle(pool).filter(q => !seen.has(q.prompt) && seen.add(q.prompt)).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
+}
+function startQuiz(){ ex.quizBy[tkey] = {qs:(tkey === 'classes' ? makeClassQuiz : tkey === 'greek' ? makeGreekQuiz : makeQuiz)(), i:0, score:0, start:performance.now(), startWall:Date.now(), picks:[], locked:false, done:false}; renderQuiz(); }
+
+function renderQuiz(){
+  const q = ex.quizBy[tkey], body = $('#exBody');
+  clearInterval(ex.clock);
+  if (!q){
+    body.innerHTML = `<div class="qstart"><h3>${esc(TEXTS[tkey].name)} Quiz</h3>
+      <p>${QUIZ_LEN} timed multiple-choice questions ${tkey === 'greek' ? 'on the names, symbols and order of the Greek alphabet' : tkey === 'classes' ? 'on which pledge class each brother is from and who the pledge educators were' : 'on who held each position on the ' + BOARDS[tkey].label + ' board and which pledge class each officer is from'}.<br>Use the number keys 1 to 4, or click. You can pause (<kbd>p</kbd>) or restart at any time. Your best score goes on the leaderboard.</p>
+      <button class="btn" id="qGo">start quiz <kbd style="margin-left:6px">enter</kbd></button></div>`;
+    $('#qGo').onclick = startQuiz; return;
+  }
+  if (q.done){
+    const missed = q.picks.filter(x => !x.ok);
+    body.innerHTML = `<div class="quiz"><div class="qstart" style="padding-bottom:10px">
+      <div class="lbl" style="color:var(--sub)">score</div>
+      <div class="qscore">${q.score}/${q.qs.length}</div>
+      <p style="margin-top:12px">${Math.round(q.score / q.qs.length * 100)}% · ${fmtDur(q.time)} · ${esc(fmtTs(q.ts))}</p>
+      <div class="post" id="execPost" style="justify-content:center"></div>
+      <div class="actions" style="margin-top:20px"><button class="btn" id="qAgain">try again <kbd style="margin-left:6px">enter</kbd></button>&nbsp;&nbsp;<button class="btn ghost" id="qBoard">🏆 leaderboard</button>&nbsp;&nbsp;<button class="btn ghost" id="qStudy">study sheet</button></div></div>
+      ${missed.length ? `<h2>review what you missed</h2><div class="missed">${missed.map(x => `<div>${x.q.prompt}<br><span class="you">you said: ${esc(x.pick)}</span> · <span class="ans">answer: ${esc(x.q.answer)}</span></div>`).join('')}</div>` : `<p style="text-align:center;color:var(--gold)">Perfect score. You know your ${tkey === 'classes' ? 'pledge classes' : tkey === 'greek' ? 'Greek letters' : 'exec board'}.</p>`}</div>`;
+    $('#qAgain').onclick = startQuiz;
+    $('#qBoard').onclick = () => show('board');
+    $('#qStudy').onclick = () => { ex.tab = 'study'; renderExec(); };
+    renderPost();
+    return;
+  }
+  const cur = q.qs[q.i];
+  const ctrls = `<div class="qctrl"><button class="btn ghost" id="qPause">${q.pausedAt ? '▶ resume' : '⏸ pause'}</button><button class="btn ghost" id="qRestart">↻ restart</button></div>`;
+  if (q.pausedAt){
+    body.innerHTML = `<div class="quiz">
+      <div class="qtop"><span>question ${q.i + 1}/${q.qs.length}</span><span class="qtally"><span class="ok">✓ ${q.score}</span><span class="bad">✗ ${q.picks.length - q.score}</span></span><span>${fmtDur(qElapsed(q) / 1000)}</span></div>
+      <div class="qbar"><div style="width:${q.i / q.qs.length * 100}%"></div></div>
+      <div class="qpaused"><div class="ptitle">⏸ Paused</div><p>The timer is stopped and the question is hidden.${isTouch ? '' : ' Press <kbd>p</kbd> or <kbd>esc</kbd> to resume.'}</p>
+      <div class="qctrl" style="justify-content:center"><button class="btn" id="qPause">▶ resume</button><button class="btn ghost" id="qRestart">↻ restart quiz</button></div></div></div>`;
+    wireQuizCtrls(); return;
+  }
+  body.innerHTML = `<div class="quiz">
+    <div class="qtop"><span>question ${q.i + 1}/${q.qs.length}</span><span class="qtally"><span class="ok">✓ ${q.score}</span><span class="bad">✗ ${q.picks.length - q.score}</span></span><span id="qClock">0:00</span></div>
+    <div class="qbar"><div style="width:${q.i / q.qs.length * 100}%"></div></div>
+    ${ctrls}
+    <div class="qprompt">${cur.prompt}</div>
+    <div class="qopts">${cur.options.map((o, i) => `<button class="qopt" data-i="${i}"><kbd>${i + 1}</kbd><span class="${cur.glyphOpts ? 'glyph' : ''}">${esc(o)}</span></button>`).join('')}</div></div>`;
+  body.querySelectorAll('.qopt').forEach(b => b.onclick = () => answer(+b.dataset.i));
+  wireQuizCtrls();
+  const tick = () => { const el = $('#qClock'); if (el) el.textContent = fmtDur(qElapsed(q) / 1000); };
+  tick(); ex.clock = setInterval(tick, 500);
+}
+
+function qElapsed(q){ return performance.now() - q.start - (q.pausedTotal || 0) - (q.pausedAt ? performance.now() - q.pausedAt : 0); }
+function pauseQuiz(q){ if (q && !q.done && !q.pausedAt){ q.pausedAt = performance.now(); } }
+function resumeQuiz(q){ if (q && q.pausedAt){ q.pausedTotal = (q.pausedTotal || 0) + (performance.now() - q.pausedAt); q.pausedAt = 0; } }
+function togglePause(){ const q = ex.quizBy[tkey]; if (!q || q.done) return; q.pausedAt ? resumeQuiz(q) : pauseQuiz(q); renderQuiz(); }
+function pauseAllQuizzes(){ Object.values(ex.quizBy).forEach(pauseQuiz); }
+function wireQuizCtrls(){
+  const pb = $('#qPause'), rb = $('#qRestart');
+  if (pb) pb.onclick = () => { pb.blur(); togglePause(); };
+  if (rb) rb.onclick = () => {
+    if (!rb.classList.contains('arm')){ rb.classList.add('arm'); rb.textContent = 'tap again to restart'; setTimeout(() => { if (rb.isConnected){ rb.classList.remove('arm'); rb.textContent = '↻ restart'; } }, 3000); return; }
+    startQuiz();
+  };
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden){ pauseAllQuizzes(); if (view === 'exec' && ex.tab === 'quiz') renderQuiz(); } });
+
+function answer(i){
+  const q = ex.quizBy[tkey]; if (!q || q.done || q.locked || q.pausedAt) return;
+  const cur = q.qs[q.i], pick = cur.options[i]; if (pick === undefined) return;
+  q.locked = true;
+  const ok = pick === cur.answer;
+  if (ok) q.score++;
+  q.picks.push({q:cur, pick, ok});
+  document.querySelectorAll('.qopt').forEach((b, j) => {
+    b.disabled = true;
+    if (cur.options[j] === cur.answer) b.classList.add('right');
+    else if (j === i) b.classList.add('wrong');
+  });
+  const key = tkey;
+  setTimeout(() => {
+    q.locked = false; q.i++;
+    if (q.i >= q.qs.length){ if (tkey === key) finishQuiz(); else { q.i--; } }
+    else if (tkey === key && view === 'exec' && ex.tab === 'quiz') renderQuiz();
+  }, ok ? 650 : 1500);
+}
+
+function finishQuiz(){
+  const q = ex.quizBy[tkey];
+  resumeQuiz(q); q.done = true; q.time = +(qElapsed(q) / 1000).toFixed(1); q.ts = Date.now();
+  const run = {text:tkey, score:q.score, total:q.qs.length, pct:+(q.score / q.qs.length * 100).toFixed(1), time:q.time, started:q.startWall, ts:q.ts};
+  local.runs.push(run); local.runs = local.runs.slice(-300); saveLocal();
+  renderQuiz();
+  postRun(run);
+}
+
+function execKey(e){
+  const t = e.target.tagName;
+  if (t === 'SELECT') return;
+  if ((e.key === ' ' || e.key === 'Enter') && (t === 'BUTTON' || (t === 'DIV' && e.target.id !== 'flashCard' && e.target.tabIndex >= 0))) return;
+  if (ex.tab === 'quiz'){
+    const q = ex.quizBy[tkey];
+    if (e.key === 'Enter' && (!q || q.done)){ e.preventDefault(); startQuiz(); return; }
+    if (q && !q.done && (e.key === 'p' || e.key === 'P' || e.key === 'Escape')){ e.preventDefault(); togglePause(); return; }
+    if (q && !q.done && /^[1-4]$/.test(e.key)){ e.preventDefault(); answer(+e.key - 1); }
+  } else if (ex.tab === 'flash'){
+    const flip = tkey === 'classes' ? clFlip : tkey === 'greek' ? grFlip : flipCard;
+    const move = tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : moveCard;
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); flip(); }
+    else if (e.key === 'ArrowRight'){ e.preventDefault(); move(1); }
+    else if (e.key === 'ArrowLeft'){ e.preventDefault(); move(-1); }
+  }
+}
+
+function renderQuizHistory(){
+  $('#histHead').innerHTML = '<tr><th>#</th><th>score</th><th>%</th><th>time</th><th class="r">date &amp; time</th></tr>';
+  const runs = allMyRuns(), b = bestOf(runs), last10 = runs.slice(-10);
+  const avg = last10.length ? last10.reduce((a, r) => a + r.pct, 0) / last10.length : 0;
+  const total = runs.reduce((a, r) => a + r.time, 0);
+  $('#cards').innerHTML = [
+    ['quizzes taken', runs.length],
+    ['best score', b ? b.score + '/' + b.total : '–'],
+    ['avg % (last 10)', runs.length ? Math.round(avg) + '%' : '–'],
+    ['perfect scores', runs.filter(r => r.score === r.total).length],
+    ['time quizzing', fmtDur(total)]
+  ].map(([l, v]) => `<div class="card"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#hChart').innerHTML = progressChart(runs, 'pct', '%', 100);
+  $('#histBody').innerHTML = runs.length ? runs.slice().reverse().map((r, i) => `<tr class="${b && r.ts === b.ts ? 'me' : ''}">
+      <td class="muted">${runs.length - i}</td><td>${r.score}/${r.total}${b && r.ts === b.ts ? ' <span class="crown">★</span>' : ''}</td>
+      <td>${Math.round(r.pct)}%</td><td>${fmtDur(r.time)}</td><td class="r muted">${esc(fmtTs(r.ts))}</td></tr>`).join('')
+    : `<tr><td colspan="5" class="empty">No quizzes yet. Open the study tab and take the quiz.</td></tr>`;
+}
+
+/* ---------- greek letters ---------- */
+const GREEK = [['Α','α','Alpha'],['Β','β','Beta'],['Γ','γ','Gamma'],['Δ','δ','Delta'],['Ε','ε','Epsilon'],['Ζ','ζ','Zeta'],['Η','η','Eta'],['Θ','θ','Theta'],['Ι','ι','Iota'],['Κ','κ','Kappa'],['Λ','λ','Lambda'],['Μ','μ','Mu'],['Ν','ν','Nu'],['Ξ','ξ','Xi'],['Ο','ο','Omicron'],['Π','π','Pi'],['Ρ','ρ','Rho'],['Σ','σ/ς','Sigma'],['Τ','τ','Tau'],['Υ','υ','Upsilon'],['Φ','φ','Phi'],['Χ','χ','Chi'],['Ψ','ψ','Psi'],['Ω','ω','Omega']].map(([up, lo, name], i) => ({up, lo, name, n:i + 1}));
+const gr = {hide:'none', shown:new Set(), fc:{order:GREEK.map((_, i) => i), i:0, back:false, front:'glyph'}};
+const glyph = g => g.up + ' ' + g.lo;
+
+function renderGreekStudy(){
+  const hiding = gr.hide !== 'none';
+  $('#exBody').innerHTML = `<p class="exintro">All 24 letters of the Greek alphabet in order. To test yourself, hide the names or the letters and tap a card to reveal it.</p>
+    <div class="exbar"><span><span class="lab">hide</span>${segHTML('sgGh', [['none','nothing'],['name','names'],['glyph','letters']], gr.hide)}</span></div>
+    <div class="ggrid">${GREEK.map((g, i) => {
+      const open = gr.shown.has(i), hn = hiding && gr.hide === 'name' && !open, hg = hiding && gr.hide === 'glyph' && !open;
+      return `<div class="gcard ${hiding ? 'quizzable' : ''}" data-i="${i}">
+        <div class="gl ${hg ? 'blank' : ''}">${hg ? '?' : esc(glyph(g))}</div>
+        <div class="gn ${hn ? 'blank' : ''}">${hn ? 'name?' : esc(g.name)}</div>
+        <div class="gi">${g.n} of 24</div></div>`;
+    }).join('')}</div>`;
+  wireSeg('sgGh', v => { gr.hide = v; gr.shown.clear(); renderGreekStudy(); });
+  document.querySelectorAll('.gcard.quizzable').forEach(c => c.onclick = () => { const i = +c.dataset.i; gr.shown.has(i) ? gr.shown.delete(i) : gr.shown.add(i); renderGreekStudy(); });
+}
+
+function renderGreekFlash(){
+  const f = gr.fc, g = GREEK[f.order[f.i]], byGlyph = f.front === 'glyph';
+  const front = byGlyph ? `<div class="glyph">${esc(glyph(g))}</div>` : `<div class="f1">${esc(g.name)}</div>`;
+  const face = !f.back
+    ? `${front}<div class="tip">${byGlyph ? 'What is this letter called?' : 'What does this letter look like?'}<br>${isTouch ? 'Tap the card to flip it.' : 'Tap the card or press space to flip.'}</div>`
+    : `${byGlyph ? front + `<div class="f2">${esc(g.name)}</div>` : front + `<div class="glyph" style="margin-top:12px">${esc(glyph(g))}</div>`}<div class="f3">letter ${g.n} of 24</div><div class="tip">${isTouch ? 'swipe left or right for the next card' : '← → arrow keys to move between cards'}</div>`;
+  $('#exBody').innerHTML = `<div class="exbar"><span><span class="lab">front of card</span>${segHTML('sgGf', [['glyph','letter'],['name','name']], f.front)}</span></div>
+    <div class="flashwrap">
+      <div class="flash ${f.back ? 'back' : ''}" id="flashCard" role="button" tabindex="0" aria-label="Flip card">${face}</div>
+      <div class="fcnav"><button class="btn ghost" id="fcPrev">← prev</button><span class="count">${f.i + 1} / 24</span><button class="btn ghost" id="fcNext">next →</button><button class="btn ghost" id="fcShuf">⤮ shuffle</button><button class="btn ghost" id="fcOrd">in order</button></div>
+    </div>`;
+  wireSeg('sgGf', v => { f.front = v; f.back = false; renderGreekFlash(); });
+  $('#flashCard').onclick = grFlip;
+  $('#fcPrev').onclick = () => grMove(-1);
+  $('#fcNext').onclick = () => grMove(1);
+  $('#fcShuf').onclick = () => { f.order = shuffle(f.order); f.i = 0; f.back = false; renderGreekFlash(); };
+  $('#fcOrd').onclick = () => { f.order = GREEK.map((_, i) => i); f.i = 0; f.back = false; renderGreekFlash(); };
+}
+function grFlip(){ gr.fc.back = !gr.fc.back; renderGreekFlash(); }
+function grMove(d){ const f = gr.fc; f.i = (f.i + d + 24) % 24; f.back = false; renderGreekFlash(); }
+
+function makeGreekQuiz(){
+  const pick = (arr, n) => shuffle(arr).slice(0, n);
+  const others = g => GREEK.filter(o => o !== g);
+  const G = s => `<span class="glyph">${esc(s)}</span>`;
+  const qs = [];
+  pick(GREEK, 8).forEach(g => qs.push({prompt:`What is this letter called?${G(glyph(g))}`, answer:g.name, opts:pick(others(g), 3).map(o => o.name)}));
+  pick(GREEK, 5).forEach(g => qs.push({prompt:`Which one is <b>${g.name}</b>?`, answer:glyph(g), opts:pick(others(g), 3).map(glyph), glyphOpts:true}));
+  pick(GREEK, 3).forEach(g => qs.push({prompt:`Which letter is this lowercase symbol?${G(g.lo)}`, answer:g.name, opts:pick(others(g), 3).map(o => o.name)}));
+  pick(GREEK.slice(0, 23), 2).forEach(g => { const nx = GREEK[g.n]; qs.push({prompt:`Which letter comes right after <b>${g.name}</b>?`, answer:nx.name, opts:pick(GREEK.filter(o => o !== nx && o !== g), 3).map(o => o.name)}); });
+  pick(GREEK.slice(1), 2).forEach(g => { const pv = GREEK[g.n - 2]; qs.push({prompt:`Which letter comes right before <b>${g.name}</b>?`, answer:pv.name, opts:pick(GREEK.filter(o => o !== pv && o !== g), 3).map(o => o.name)}); });
+  return shuffle(qs).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
+}
+
+/* ---------- pledge classes ---------- */
+const CLASSES = [{"name": "Zeta Lambda", "term": "Spring 2026", "pe": ["Logan Truso", "William Mancke"], "members": ["Adriana Rizzuti", "Alessia Messina", "Cade Hoffman", "Christian Claypoole", "Daniel Perret-Gentil", "Dean Lynn", "Emma Jo Jenniex", "Ian Ayres", "Isabella Thompson", "Jason Gouws", "Jose Sarraga", "Joshua Bedoya", "Kati Smith", "Lauren Sutton", "Lucca Freitas", "Mackenzie Grimmig", "Madison DiSomma", "Malu Taka", "Maria Oliveira", "Mason Rosecrans", "Miles Archer", "My-Linh Eberhard", "Sachin Budda", "Sarah Rothschild", "Steven DiMarco"]}, {"name": "Zeta Kappa", "term": "Fall 2025", "pe": ["Muharem Zdralic", "Devon Maue"], "members": ["Aidan Lacey", "Angelina Fasolo", "Daniel Lopez", "David Hernandez", "Daniel Storchevyi", "Giuseppe Riccobono", "Gladymar Rodriguez", "Isabella Freitas", "Jimena Del Barrio Flores", "Natalie Wilson", "Nikolas Sirois", "Paige Wolle", "Roberta Barreto", "Samuel Heise", "Siri Mullapudi", "Sophia Miranda", "Stephen Weaver", "Valentina Lorenzo", "Valeria Burbano", "Veronica Matsikh"]}, {"name": "Zeta Iota", "term": "Spring 2025", "pe": ["Brody Hlavaty", "Jacob Morgan"], "members": ["Advika Abhijeet Panse", "Alayna G. Myhre", "Alessandro Rinaldi", "Andy Bui", "Andrew Huy-Duc Kien", "Andrew Jacob Michel", "Analiese Kuriakose", "Anusha Rameshbabu Anna", "Ava Howell", "Bailey Grace Gayron", "Bennett Parani", "Caitlin Ann Wallsmith", "Carson Bellet", "Charles Ewing O'Brien", "Cindy Diem Dao", "Erika Grace Nordlund", "Felipe Santos", "Gage Harley Tiva", "Hannah Mackenzie Robison", "Isabelle Brozenec", "James Emmanuel Hicks", "Jose Alberto Alas Alvarenga", "Kiana Chutinan", "Lia Brooke Agliata", "Liam Tyler Hudson", "Marco Netto", "Mckenzie Hulett King", "Mitchel Woodrow", "Noah David Aguirre", "Paitynn Redden", "Sarah Katelyn Burbank", "Shane Harry", "Sydney Payne", "Thalia Dittman", "Theodora Hirmina", "Timmy Thai Nguyen", "Tobias Martin", "Victoria Isabella Sonza", "Victoria Salcedo", "Yasmine Chiadmi"]}, {"name": "Zeta Theta", "term": "Fall 2024", "pe": ["Lauren Bolnick", "Jessica Ferrin"], "members": ["Aaron Scott Reyes", "Anthony Vega", "Arina Zaytseva", "Brooke Herzog", "Bryn Maron", "Camila Barito", "Camila Maria Deoliveira", "Christopher Mundry", "Eric Hanson", "Evan Jack Colletta", "Evan Puccio", "Glenn Farno", "Hunter Pierce", "Isabela Barsky", "Jack Brody Casey", "Joel Bernstein", "Juan Bernardo Castelo", "Landon Pierce", "Logan Connor Bancroft", "Logan John Truso", "Lydie Keita", "Mackenzee Hishon", "Marc Joseph Cruz", "Mateo Fernando Rojas", "Mateo Rubiano Rojas", "Mia Crespo", "Mia Quintana", "Natalia Osorio", "Nicole Huff", "Paula Dorado", "Phillip Johnson", "Ridgeley Sokun", "Rualt Maska", "Rylee Howell", "Samantha Knight", "Sofia Carolyn Hittinger", "Sophia Cooper", "Sophia Martins Vasconcelos", "Sydney Wagner", "William Mancke", "Wyatt Anderson"]}, {"name": "Zeta Eta", "term": "Spring 2024", "pe": ["Joaquin Arana", "James Drinkwater"], "members": ["Antoine Bali", "Austin Vetter", "Austin Wehle", "Ben Gill", "Brody Hlavaty", "Connor Steedman", "Daniel Bullock", "Devon Maue", "Gustavo Aviles", "Jacob Morgan", "Jordan Lamphere", "Kara Johnson", "Kyer Evans", "Maddie Ahearn", "Maya Gagnaire", "Melia Lemont", "Mikayla Wise", "Muharem Zdralic", "Nicole Teixeira", "Rexford Smith", "Robert Pratt", "Will Vierengel"]}, {"name": "Zeta Zeta", "term": "Spring 2024", "pe": ["Damian Truax", "Aqsa Patel"], "members": ["Amanda Bixby", "Anna Radovic", "Alisha Panchal", "Alejandra Manrique", "Brady Van Pelt", "Brandon Rossler", "Bailey Topp", "Brenic Jedrzejak", "Claire Hart", "Carlos Cisneros", "Dylan Geiger", "Haile Scandaliato", "Isabella Nina", "Jillian Grenier", "Lizzie Roethel", "Madeline Negip", "Nicholas Gilligan", "Petar Isailovic", "Philip McFarlane", "Roxette Castaneda", "Tyler Whiddon", "Vanessa Martin", "Veronica Ingannamorte", "Victoria Andueza"]}, {"name": "Zeta Epsilon", "term": "Spring 2023", "pe": ["Robert Moran", "Justin Dittmar"], "members": ["Amani Long", "Aqsa Patel", "Christina Bell", "Caleb Lindsey", "Hayley Crews", "Heather Crew", "James Drinkwater", "Johnna Noel", "Jonathon Cox", "Kailyn Terry", "Mason Chamberlin", "Meredith Garrett", "Marcus Sanchez", "Mateo Hodo", "Prachi Patel", "Sean Kirk", "Sean Walsh", "Soleil Plested", "Tania Torres Sanchez", "TJ Massiah", "Veronica Manrique", "Vienna Caprio"]}, {"name": "Zeta Delta", "term": "Fall 2022", "pe": ["McKenna Perusich", "Kayla Renert"], "members": ["Ayomikun Agbejule", "Joaquin Arana", "Lauren Bolnick", "Christopher Colin Bryant", "Chelsey Caines", "Daniela Celis", "Jesy De Sosa", "Jessica Ferrin", "Blake Flores", "Luke Graham", "Breann Johnson", "Jake Jones", "Mikaela Kwan", "AJ McGarvey", "Rachel Reina", "Emily Rushing", "Sofia Salazar", "Alyssa Snyder", "Alexis Spencer", "Alexis Woytek", "Ethan Young"]}];
+const clLabel = c => c.name + ' · ' + c.term;
+const keyName = n => { const t = n.replace(/[^A-Za-z\- ]/g,'').split(' ').filter(Boolean); return (t[0] + ' ' + t[t.length-1]).toLowerCase(); };
+const EXEC_BY_KEY = {}; EXEC.forEach(p => { EXEC_BY_KEY[keyName(p.name.replace(/\(.*?\)/g,''))] = p; });
+EXEC_BY_KEY[keyName('Victoria Sonza')] = EXEC.find(p => p.name.includes('Sonza'));
+const PE_OF = {}; CLASSES.forEach(c => c.pe.forEach(n => { (PE_OF[keyName(n)] = PE_OF[keyName(n)] || []).push(c); }));
+const BROS = CLASSES.flatMap(c => c.members.map(n => ({name:n, cls:c, exec:EXEC_BY_KEY[keyName(n)] || null, pe:PE_OF[keyName(n)] || []})));
+const cl = {filter:'all', q:'', hideNames:false, shown:new Set(), fc:{filter:'all', order:[], i:0, back:false}};
+
+function renderClassStudy(){
+  const body = $('#exBody');
+  const filt = cl.filter === 'all' ? CLASSES : CLASSES.filter(c => c.name === cl.filter);
+  const q = cl.q.trim().toLowerCase();
+  body.innerHTML = `<p class="exintro">All ${BROS.length} brothers from ${CLASSES.length} pledge classes, newest first. Gold names are on the current exec board. To test yourself, hide the names and tap a chip to reveal it.</p>
+    <div class="exbar">
+      <input class="clsearch" id="clSearch" placeholder="find a brother…" value="${esc(cl.q)}" autocomplete="off" spellcheck="false">
+      <label class="textsel">class <select id="clFilter"><option value="all">all classes</option>${CLASSES.map(c => `<option value="${esc(c.name)}" ${cl.filter === c.name ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></label>
+      <span><span class="lab">names</span>${segHTML('sgNames', [['show','show'],['hide','hide']], cl.hideNames ? 'hide' : 'show')}</span>
+    </div>
+    <div id="clList">${filt.map(c => {
+      const ms = c.members.map((n, i) => {
+        const id = c.name + '|' + i, b = BROS.find(x => x.name === n && x.cls === c);
+        const hidden = cl.hideNames && !cl.shown.has(id) && !q;
+        const hit = q && n.toLowerCase().includes(q);
+        const tip = [b.exec ? b.exec.pos : '', b.pe.length ? 'Pledge educator for ' + b.pe.map(x => x.name).join(', ') : ''].filter(Boolean).join(' · ');
+        return `<span class="chip ${b.exec ? 'exec' : ''} ${hidden ? 'hid' : ''} ${hit ? 'hit' : ''} ${q && !hit ? 'dim' : ''}" data-id="${esc(id)}" ${tip ? `title="${esc(tip)}"` : ''}>${hidden ? '?' : esc(n)}</span>`;
+      }).join('');
+      return `<div class="clsec"><h4>${esc(c.name)} <span>${esc(c.term)} · ${c.members.length} brothers</span></h4>
+        <div class="pe"><b>Pledge educators:</b> ${esc(c.pe.join(' & '))}</div><div class="chips">${ms}</div></div>`;
+    }).join('')}</div>`;
+  const si = $('#clSearch');
+  si.oninput = () => { cl.q = si.value; const pos = si.selectionStart; renderClassStudy(); const n = $('#clSearch'); n.focus(); try { n.setSelectionRange(pos, pos); } catch {} };
+  $('#clFilter').onchange = e => { cl.filter = e.target.value; renderClassStudy(); };
+  wireSeg('sgNames', v => { cl.hideNames = v === 'hide'; cl.shown.clear(); renderClassStudy(); });
+  body.querySelectorAll('.chip.hid').forEach(ch => ch.onclick = () => { cl.shown.add(ch.dataset.id); renderClassStudy(); });
+  if (q){ const first = body.querySelector('.chip.hit'); if (first && document.activeElement !== si) first.scrollIntoView({block:'center'}); }
+}
+
+function clDeck(){ return cl.fc.filter === 'all' ? BROS : BROS.filter(b => b.cls.name === cl.fc.filter); }
+function renderClassFlash(){
+  const f = cl.fc, deck = clDeck();
+  if (!f.order.length || f.order.length !== deck.length) { f.order = shuffle(deck.map((_, i) => i)); f.i = 0; }
+  const b = deck[f.order[f.i]];
+  const extra = [b.exec ? '★ ' + b.exec.pos : '', b.pe.length ? 'Pledge educator for ' + b.pe.map(x => x.name).join(', ') : ''].filter(Boolean);
+  const face = !f.back
+    ? `<div class="f1">${esc(b.name)}</div><div class="tip">Which pledge class is this brother from?<br>${isTouch ? 'Tap the card to flip it.' : 'Tap the card or press space to flip.'}</div>`
+    : `<div class="f1">${esc(b.name)}</div><div class="f2">${esc(b.cls.name)}</div><div class="f3">${esc(b.cls.term)} · PEs: ${esc(b.cls.pe.join(' & '))}</div>${extra.length ? `<div class="tip" style="color:var(--gold);margin-top:12px">${esc(extra.join(' · '))}</div>` : ''}<div class="tip">${isTouch ? 'swipe left or right for the next card' : '← → arrow keys to move between cards'}</div>`;
+  $('#exBody').innerHTML = `<div class="exbar"><label class="textsel">deck <select id="clFcFilter"><option value="all">all ${BROS.length} brothers</option>${CLASSES.map(c => `<option value="${esc(c.name)}" ${f.filter === c.name ? 'selected' : ''}>${esc(c.name)} (${c.members.length})</option>`).join('')}</select></label></div>
+    <div class="flashwrap">
+      <div class="flash ${f.back ? 'back' : ''}" id="flashCard" role="button" tabindex="0" aria-label="Flip card">${face}</div>
+      <div class="fcnav"><button class="btn ghost" id="fcPrev">← prev</button><span class="count">${f.i + 1} / ${deck.length}</span><button class="btn ghost" id="fcNext">next →</button><button class="btn ghost" id="fcShuf">⤮ shuffle</button></div>
+    </div>`;
+  $('#clFcFilter').onchange = e => { f.filter = e.target.value; f.order = []; f.back = false; e.target.blur(); renderClassFlash(); };
+  $('#flashCard').onclick = clFlip;
+  $('#fcPrev').onclick = () => clMove(-1);
+  $('#fcNext').onclick = () => clMove(1);
+  $('#fcShuf').onclick = () => { f.order = shuffle(f.order); f.i = 0; f.back = false; renderClassFlash(); };
+}
+function clFlip(){ cl.fc.back = !cl.fc.back; renderClassFlash(); }
+function clMove(d){ const f = cl.fc, n = clDeck().length; f.i = (f.i + d + n) % n; f.back = false; renderClassFlash(); }
+
+function makeClassQuiz(){
+  const pick = (arr, n) => shuffle(arr).slice(0, n);
+  const qs = [];
+  // which class is X from (12)
+  pick(BROS, 12).forEach(b => qs.push({prompt:`Which pledge class is <b>${esc(b.name)}</b> from?`, answer:clLabel(b.cls), opts:pick(CLASSES.filter(c => c !== b.cls), 3).map(clLabel)}));
+  // pledge educators (4)
+  pick(CLASSES, 4).forEach(c => qs.push({prompt:`Who were the pledge educators for <b>${esc(c.name)}</b> (${esc(c.term)})?`, answer:c.pe.join(' & '), opts:pick(CLASSES.filter(o => o !== c), 3).map(o => o.pe.join(' & '))}));
+  // which of these is in class X (4)
+  pick(CLASSES, 4).forEach(c => {
+    const ans = pick(c.members, 1)[0];
+    const others = pick(BROS.filter(b => b.cls !== c && !c.members.includes(b.name)), 3).map(b => b.name);
+    qs.push({prompt:`Which of these brothers is in <b>${esc(c.name)}</b>?`, answer:ans, opts:others});
+  });
+  return shuffle(qs).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
+}
+
+/* ---------- touch / phone helpers ---------- */
+const isTouch = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+if (isTouch){
+  document.body.classList.add('touch');
+  $('#startHint').textContent = 'Tap the text to open your keyboard, then start typing.';
+}
+hidden.addEventListener('focus', () => { if (isTouch) setTimeout(() => box.scrollIntoView({block:'center', behavior:'smooth'}), 350); });
+// swipe left/right on flashcards
+let swipeX = null, swiped = false;
+document.addEventListener('touchstart', e => { const c = e.target.closest && e.target.closest('#flashCard'); swipeX = c ? e.touches[0].clientX : null; swiped = false; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if (swipeX === null) return;
+  const dx = e.changedTouches[0].clientX - swipeX; swipeX = null;
+  if (Math.abs(dx) < 50) return;
+  swiped = true;
+  const d = dx < 0 ? 1 : -1;
+  (tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : moveCard)(d);
+}, {passive:true});
+document.addEventListener('click', e => { if (swiped && e.target.closest && e.target.closest('#flashCard')){ e.stopPropagation(); e.preventDefault(); swiped = false; } }, true);
+
+/* ---------- boot ---------- */
+reset();
+setFocus(document.hasFocus());
+document.fonts && document.fonts.ready.then(() => placeCaret());
+initShared();
+</script>
+</body>
+</html>
