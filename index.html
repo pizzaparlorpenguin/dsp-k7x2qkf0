@@ -371,7 +371,14 @@
 /* ---------- shared leaderboard on GitHub Pages ----------
    Paste your Firebase web config here (Firebase console → Project settings → Your apps → SDK setup and configuration → Config).
    Leave it as null to keep scores in each visitor's browser only. */
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAeapXlq-Ye32RmaqLCfNLYUS6UvsbAJTI",
+  authDomain: "dsp-studylb.firebaseapp.com",
+  projectId: "dsp-studylb",
+  storageBucket: "dsp-studylb.firebasestorage.app",
+  messagingSenderId: "248209719372",
+  appId: "1:248209719372:web:9946e7d2c9a9b3909a34e9"
+};
 
 const TEXTS = {
   mission: {name:'Mission statement', sub:'mission statement', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores', foot:'text: the Delta Sigma Pi purpose statement',
