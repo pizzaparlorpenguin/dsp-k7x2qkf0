@@ -131,6 +131,8 @@
   tr.me td{color:var(--gold)}
   .rank1{color:var(--gold)} .muted{color:var(--sub)}
   .crown{color:var(--gold);margin-right:6px}
+  .crown.silver{color:#c9ccd6}
+  .crown.bronze{color:#b0643a}
   a.egg{text-decoration:none;cursor:default;-webkit-touch-callout:none}
   .empty{color:var(--sub);text-align:center;padding:30px;font-size:14px}
   .del{background:none;border:0;color:var(--sub2);font-size:12px;padding:2px 6px;border-radius:5px}
@@ -893,7 +895,7 @@ function renderBoard(){
     const b = p.best;
     return `<tr class="${me ? 'me' : ''}">
       <td class="${i===0?'rank1':'muted'}">${i+1}</td>
-      <td class="name">${i===0?'<a class="crown egg" href="https://youtu.be/9cQgQIMlwWw?is=ccp0qNIFytqNz1f3" target="_blank" rel="noopener" tabindex="-1">♛</a>':''}${esc(p.name)}${me?' <span class="muted">(you)</span>':''}</td>
+      <td class="name">${i===0?'<a class="crown egg" href="https://youtu.be/9cQgQIMlwWw?is=ccp0qNIFytqNz1f3" target="_blank" rel="noopener" tabindex="-1">♛</a>':i===1?'<span class="crown silver" title="2nd place">♛</span>':i===2?'<span class="crown bronze" title="3rd place">♛</span>':''}${esc(p.name)}${me?' <span class="muted">(you)</span>':''}</td>
       ${isQ ? `<td class="r">${b.score}/${b.total}</td>
       <td class="r">${Math.round(b.pct)}%</td>
       <td class="r hide-sm muted">${fmtDur(b.time)}</td>` : `<td class="r">${Math.round(b.wpm)}</td>
