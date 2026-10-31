@@ -1002,7 +1002,9 @@ const EXEC25 = [
   ['Isabella Freitas', 'VP of Alumni Relations', 'ZK'],
   ['Giuseppe Riccobono', 'VP of Diversity, Equity, & Inclusion', 'ZK'],
   ['Angelina Fasolo', 'VP of Merchandise', 'ZK'],
-  ['Valeria Burbano', 'VP of Marketing', 'ZK']
+  ['Valeria Burbano', 'VP of Marketing', 'ZK'],
+  ['William (Will) Mancke', 'VP of Pledge Education (VPPE)', 'ZT'],
+  ['Logan Truso', 'VP of Pledge Education (VPPE)', 'ZT']
 ].map(([name, pos, pc]) => ({name, pos, pc, nat:!!(META[pos] && META[pos].nat), pillar:!!(META[pos] && META[pos].pillar)}));
 const BOARDS = {exec:{list:EXEC, label:'Fall 2026'}, exec25:{list:EXEC25, label:'2025'}};
 const B = () => (BOARDS[tkey] || BOARDS.exec).list;
