@@ -11,7 +11,7 @@ service cloud.firestore {
         && d.runs is list && d.runs.size() <= 100
         && d.best is map
         // typing tests: no impossible speeds
-        && (!(coll in ['scores', 'scores-rose']) || (d.best.wpm is number && d.best.wpm < 250))
+        && (!(coll in ['scores', 'scores-rose']) || (d.best.wpm is number && d.best.wpm < 200))
         // quizzes: score can't exceed number of questions
         && ((coll in ['scores', 'scores-rose']) || (d.best.score is number && d.best.total is number && d.best.score <= d.best.total && d.best.total <= 30));
     }
