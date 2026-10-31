@@ -37,7 +37,8 @@
   .logo img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 2px var(--gold);flex:none}
   .logolink{position:relative;display:inline-flex;flex:none;border-radius:8px}
   .logolink .playbadge{display:none}
-  .rose .logolink{cursor:pointer}
+  .logolink[href]{cursor:pointer}
+  .logolink[href]:hover img{filter:brightness(1.1);transform:scale(1.04)}
   .rose .logolink .playbadge{display:flex;position:absolute;right:-6px;bottom:-6px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:10px;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg);padding-left:2px}
   .rose .logolink:hover img{filter:brightness(1.1);transform:scale(1.04)}
   .logolink img{transition:transform .15s, filter .15s}
@@ -423,7 +424,7 @@ function applyText(){
   $('#logoImg').src = t.img; $('#logoImg').alt = t.alt;
   const ll = $('#logoLink');
   if (t.song){ ll.href = t.song; ll.title = 'Listen to Rose of Deltasig on YouTube'; ll.setAttribute('aria-label', 'Listen to Rose of Deltasig on YouTube'); }
-  else { ll.removeAttribute('href'); ll.removeAttribute('title'); ll.removeAttribute('aria-label'); }
+  else { ll.href = 'https://www.ucfdeltasig.com/'; ll.title = 'UCF Delta Sigma Pi (Theta Sigma chapter) website'; ll.setAttribute('aria-label', 'Open the UCF Delta Sigma Pi website'); }
   $('#logoSub').textContent = t.sub; $('#foot').textContent = 'ΔΣΠ type · ' + t.foot;
   $('#textSel').value = tkey;
   $('#boardTitle').textContent = 'leaderboard · ' + t.name.toLowerCase() + ' · best run per person';
@@ -486,7 +487,7 @@ function build(){
 
 function reset(){
   clearInterval(ticker);
-  st = {typed:[], keys:0, correctKeys:0, errors:0, start:0, startWall:0, samples:[], secKeys:0, secErrors:0, lastSec:0, done:false};
+  st = {typed:[], ks:[], bulk:0, keys:0, correctKeys:0, errors:0, start:0, startWall:0, samples:[], secKeys:0, secErrors:0, lastSec:0, done:false};
   build();
   $('#live').classList.remove('show'); $('#startHint').classList.remove('hide');
   box.classList.remove('typing');
@@ -548,7 +549,7 @@ function typeChar(ch){
   const i = st.typed.length;
   if (i >= TEXT.length) return;
   if (!st.start) startTimer();
-  st.typed.push(ch); st.keys++; st.secKeys++;
+  st.typed.push(ch); st.keys++; st.secKeys++; st.ks.push(performance.now());
   const ok = ch === TEXT[i];
   if (ok) st.correctKeys++; else { st.errors++; st.secErrors++; }
   chars[i].classList.add(ok ? 'c' : 'x');
@@ -574,19 +575,22 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ e.preventDefault(); reset(); return; }
   if (e.key === 'Backspace'){ e.preventDefault(); backspace(e.ctrlKey || e.altKey || e.metaKey); return; }
   if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !(e.altKey && !e.key.match(/\S/))){
-    e.preventDefault(); typeChar(e.key);
+    e.preventDefault(); if (!e.isTrusted) return; typeChar(e.key);
   }
 });
 /* mobile soft keyboards */
 const SENT = '  ';
 function primeHidden(){ hidden.value = SENT; try { hidden.setSelectionRange(SENT.length, SENT.length); } catch {} }
 hidden.addEventListener('focus', primeHidden);
-hidden.addEventListener('input', () => {
+hidden.addEventListener('input', e => {
   const v = hidden.value;
+  // ignore scripted input, pastes and drag-drops
+  if (!e.isTrusted || /paste|drop/i.test(e.inputType || '')){ primeHidden(); return; }
   if (v.length < SENT.length) backspace(false);
-  else for (const ch of v.slice(SENT.length)) typeChar(ch);
+  else { const add = v.slice(SENT.length); if (add.length > 1) st.bulk += add.length; for (const ch of add) typeChar(ch); }
   primeHidden();
 });
+document.addEventListener('drop', e => { if (e.target === hidden || box.contains(e.target)) e.preventDefault(); });
 document.addEventListener('paste', e => { if (e.target !== nameEl && !(e.target.classList && e.target.closest('.post'))) e.preventDefault(); });
 box.addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
 $('#startHint').addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
@@ -599,6 +603,21 @@ $('#next').onclick = e => { e.currentTarget.blur(); reset(); };
 $('#toBoard').onclick = () => show('board');
 
 /* ---------- finishing ---------- */
+/* runs that look automated are kept in your history but never posted */
+const MAX_WPM = 200;
+function cheatCheck(run){
+  const gaps = []; for (let i = 1; i < st.ks.length; i++) gaps.push(st.ks[i] - st.ks[i-1]);
+  if (run.wpm >= MAX_WPM) return 'faster than ' + MAX_WPM + ' wpm';
+  if (st.bulk > TEXT.length * 0.05) return 'text was entered in chunks instead of keystrokes';
+  if (gaps.length > 20){
+    const tiny = gaps.filter(g => g < 12).length / gaps.length;
+    if (tiny > 0.15) return 'too many keystrokes landed at the same instant';
+    const m = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+    const sd = Math.sqrt(gaps.reduce((a, b) => a + (b - m) ** 2, 0) / gaps.length);
+    if (m > 0 && sd / m < 0.15) return 'keystroke timing was machine-even';
+  }
+  return '';
+}
 function kogasa(cov){ return 100 * (1 - Math.tanh(cov + cov**3/3 + cov**5/5)); }
 function finish(){
   st.done = true; clearInterval(ticker);
@@ -619,6 +638,7 @@ function finish(){
     text: tkey, started: st.startWall, ts: Date.now(),
     samples: st.samples
   };
+  const flag = cheatCheck(run); if (flag) run.flag = flag;
   const prevBest = bestOf(allMyRuns());
   local.runs.push(run); local.runs = local.runs.slice(-200); saveLocal();
   const isPB = !prevBest || run.wpm > prevBest.wpm;
@@ -785,6 +805,7 @@ function handleWriteErr(e){
 }
 
 function postRun(run){
+  if (run.flag) return;
   if (mode !== 'shared' || !canWrite || !uid || !local.name) return;
   writeErr = '';
   queue(async () => {
@@ -811,6 +832,11 @@ function renderPost(justPosted){
   if (!el) return;
   if (view === 'exec' && tkey === 'classes'){ el.style.display = 'none'; return; }
   const last = local.runs[local.runs.length-1];
+  if (view !== 'exec' && last && last.flag){
+    el.style.display = 'flex';
+    el.innerHTML = `<span>This run wasn't posted to the leaderboard (${esc(last.flag)}). It's still saved in your history.</span>`;
+    return;
+  }
   if (mode === 'shared' && canWrite && uid){
     if (!local.name){
       el.style.display = 'flex';
@@ -839,7 +865,7 @@ function better(a, b){
   if (TEXTS[a.text] && TEXTS[a.text].quiz) return a.pct > b.pct || (a.pct === b.pct && a.time < b.time);
   return a.wpm > b.wpm || (a.wpm === b.wpm && a.acc > b.acc);
 }
-function bestOf(runs){ return runs.reduce((b, r) => better(r, b) ? r : b, null); }
+function bestOf(runs){ return runs.reduce((b, r) => (!r.flag && better(r, b)) ? r : b, null); }
 function allMyRuns(){
   const map = new Map();
   local.runs.filter(r => runText(r) === tkey).forEach(r => map.set(r.ts, r));
