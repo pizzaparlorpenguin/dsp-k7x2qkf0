@@ -37,8 +37,7 @@
   .logo img{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 2px var(--gold);flex:none}
   .logolink{position:relative;display:inline-flex;flex:none;border-radius:8px}
   .logolink .playbadge{display:none}
-  .logolink[href]{cursor:pointer}
-  .logolink[href]:hover img{filter:brightness(1.1);transform:scale(1.04)}
+  .rose .logolink{cursor:pointer}
   .rose .logolink .playbadge{display:flex;position:absolute;right:-6px;bottom:-6px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:10px;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg);padding-left:2px}
   .rose .logolink:hover img{filter:brightness(1.1);transform:scale(1.04)}
   .logolink img{transition:transform .15s, filter .15s}
@@ -131,8 +130,6 @@
   tr.me td{color:var(--gold)}
   .rank1{color:var(--gold)} .muted{color:var(--sub)}
   .crown{color:var(--gold);margin-right:6px}
-  .crown.silver{color:#c9ccd6}
-  .crown.bronze{color:#b0643a}
   a.egg{text-decoration:none;cursor:default;-webkit-touch-callout:none}
   .empty{color:var(--sub);text-align:center;padding:30px;font-size:14px}
   .del{background:none;border:0;color:var(--sub2);font-size:12px;padding:2px 6px;border-radius:5px}
@@ -182,13 +179,6 @@
   .clsec .pe{font-size:13px;color:var(--text);margin:6px 0 12px}
   .clsec .pe b{color:var(--sub);font-weight:400}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .clpick{margin:4px auto 18px;max-width:560px;text-align:center}
-  .clpick-top{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:8px}
-  .clpick-top .lab{color:var(--sub);font-size:13px;margin-right:4px}
-  .btn.sm{font-size:12px;padding:4px 10px}
-  .clpick-list{justify-content:center}
-  .clpick-n{color:var(--sub);font-size:12px;margin-top:8px}
-  .btn[disabled]{opacity:.4;pointer-events:none}
   .chip{font-size:13px;background:var(--bg3);border-radius:20px;padding:4px 11px;color:var(--text)}
   .chip.exec{background:var(--gold);color:var(--bg);font-weight:600}
   .chip.hit{outline:2px solid var(--ok)}
@@ -207,6 +197,13 @@
   .flash .glyph{font-family:'Times New Roman',Georgia,serif;font-size:96px;color:var(--gold);line-height:1}
   .qprompt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:56px;color:var(--gold);display:block;margin:8px 0 4px}
   .qopt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:28px;color:var(--gold)}
+  .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+  .kcard{background:var(--bg2);border-radius:12px;padding:14px 16px;border:1px solid transparent}
+  .kcard.quizzable{cursor:pointer} .kcard.quizzable:hover{border-color:var(--gold-dim)}
+  .kcard .kq{font-size:14px;color:var(--text);font-weight:600;line-height:1.4}
+  .kcard .ka{font-size:14px;color:var(--gold);margin-top:8px;line-height:1.45}
+  .flash .f1.kf{font-size:24px} .flash .f2.kf{font-size:20px;line-height:1.4}
+  .qopts.long{grid-template-columns:1fr} .qopts.long .qopt{font-size:15px;line-height:1.4}
   .blank{color:var(--sub2) !important;font-style:italic;font-weight:400 !important}
   .pc.blank{background:transparent;border:1px dashed var(--sub2)}
   .grouph{color:var(--gold);font-size:15px;margin:26px 0 10px;display:flex;gap:10px;align-items:baseline}
@@ -279,6 +276,7 @@
     .flash{min-height:230px;padding:24px 18px}
     .qopt{padding:15px 16px;font-size:16px}
     .qprompt .glyph{font-size:48px}
+    .qopts.long .qopt{font-size:14px;padding:12px 14px} .kgrid{grid-template-columns:1fr} .flash .f1.kf{font-size:20px} .flash .f2.kf{font-size:17px}
   }
   #hidden{font-size:16px}
   @media (pointer:coarse){
@@ -296,7 +294,7 @@
       <button data-v="board">leaderboard</button>
       <button data-v="history">history</button>
     </nav>
-    <label class="textsel">text <select id="textSel"><option value="mission">Mission statement</option><option value="rose">Rose of Deltasig</option><option value="greek">Greek Letters</option><option value="exec">Executive Board 26’</option><option value="exec25">Executive Board 25’</option><option value="classes">Pledge Classes</option></select></label>
+    <label class="textsel">text <select id="textSel"><option value="mission">Mission statement</option><option value="rose">Rose of Deltasig</option><option value="greek">Greek Letters</option><option value="know">DSP Knowledge</option><option value="exec">Executive Board 26’</option><option value="exec25">Executive Board 25’</option><option value="classes">Pledge Classes</option></select></label>
     <div class="namebox">
       <span class="sync" id="sync" title="Leaderboard status"><span class="dot" id="syncdot"></span><span id="synctxt">connecting…</span></span>
       <input id="name" aria-label="Your name" maxlength="24" placeholder="your name" autocomplete="off" spellcheck="false">
@@ -403,6 +401,7 @@ const TEXTS = {
   rose: {song:'https://www.youtube.com/watch?v=rD4NK91GH78', name:'Rose of Deltasig', sub:'rose of deltasig', img:'logo-rose.png', alt:'Rose of Delta Sig sheet music cover', coll:'scores-rose', foot:'text: chorus of Rose of Deltasig, words and music by Paul H. Coughlin (Mu Chapter)',
     text:"Rose of Deltasig I love you, Rose of Delta Sigma Pi, When the shades of night are falling I dream of days gone by; As I go thru life's long journey, Memories will never die, I will always hear you calling, Rose of Delta Sigma Pi."},
   classes: {name:'Pledge Classes', sub:'pledge classes', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-classes', quiz:true, foot:'study mode: every pledge class from Zeta Delta to Zeta Lambda, with pledge educators', text:''},
+  know: {name:'DSP Knowledge', sub:'dsp knowledge', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-know', quiz:true, foot:'study mode: key facts from the weekly pledge modules', text:''},
   greek: {name:'Greek Letters', sub:'greek letters', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-greek', quiz:true, foot:'study mode: all 24 letters of the Greek alphabet', text:''},
   exec25: {name:'Executive Board 25’', sub:'executive board 25’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec25', quiz:true, foot:'study mode: the 2025 executive board, their positions and pledge classes', text:''},
   exec: {name:'Executive Board 26’', sub:'executive board 26’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec', quiz:true, foot:'study mode: the Fall 2026 executive board, their positions and pledge classes', text:''}
@@ -426,7 +425,7 @@ function applyText(){
   $('#logoImg').src = t.img; $('#logoImg').alt = t.alt;
   const ll = $('#logoLink');
   if (t.song){ ll.href = t.song; ll.title = 'Listen to Rose of Deltasig on YouTube'; ll.setAttribute('aria-label', 'Listen to Rose of Deltasig on YouTube'); }
-  else { ll.href = 'https://www.ucfdeltasig.com/'; ll.title = 'UCF Delta Sigma Pi (Theta Sigma chapter) website'; ll.setAttribute('aria-label', 'Open the UCF Delta Sigma Pi website'); }
+  else { ll.removeAttribute('href'); ll.removeAttribute('title'); ll.removeAttribute('aria-label'); }
   $('#logoSub').textContent = t.sub; $('#foot').textContent = 'ΔΣΠ type · ' + t.foot;
   $('#textSel').value = tkey;
   $('#boardTitle').textContent = 'leaderboard · ' + t.name.toLowerCase() + ' · best run per person';
@@ -489,7 +488,7 @@ function build(){
 
 function reset(){
   clearInterval(ticker);
-  st = {typed:[], ks:[], bulk:0, keys:0, correctKeys:0, errors:0, start:0, startWall:0, samples:[], secKeys:0, secErrors:0, lastSec:0, done:false};
+  st = {typed:[], keys:0, correctKeys:0, errors:0, start:0, startWall:0, samples:[], secKeys:0, secErrors:0, lastSec:0, done:false};
   build();
   $('#live').classList.remove('show'); $('#startHint').classList.remove('hide');
   box.classList.remove('typing');
@@ -551,7 +550,7 @@ function typeChar(ch){
   const i = st.typed.length;
   if (i >= TEXT.length) return;
   if (!st.start) startTimer();
-  st.typed.push(ch); st.keys++; st.secKeys++; st.ks.push(performance.now());
+  st.typed.push(ch); st.keys++; st.secKeys++;
   const ok = ch === TEXT[i];
   if (ok) st.correctKeys++; else { st.errors++; st.secErrors++; }
   chars[i].classList.add(ok ? 'c' : 'x');
@@ -577,22 +576,19 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ e.preventDefault(); reset(); return; }
   if (e.key === 'Backspace'){ e.preventDefault(); backspace(e.ctrlKey || e.altKey || e.metaKey); return; }
   if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !(e.altKey && !e.key.match(/\S/))){
-    e.preventDefault(); if (!e.isTrusted) return; typeChar(e.key);
+    e.preventDefault(); typeChar(e.key);
   }
 });
 /* mobile soft keyboards */
 const SENT = '  ';
 function primeHidden(){ hidden.value = SENT; try { hidden.setSelectionRange(SENT.length, SENT.length); } catch {} }
 hidden.addEventListener('focus', primeHidden);
-hidden.addEventListener('input', e => {
+hidden.addEventListener('input', () => {
   const v = hidden.value;
-  // ignore scripted input, pastes and drag-drops
-  if (!e.isTrusted || /paste|drop/i.test(e.inputType || '')){ primeHidden(); return; }
   if (v.length < SENT.length) backspace(false);
-  else { const add = v.slice(SENT.length); if (add.length > 1) st.bulk += add.length; for (const ch of add) typeChar(ch); }
+  else for (const ch of v.slice(SENT.length)) typeChar(ch);
   primeHidden();
 });
-document.addEventListener('drop', e => { if (e.target === hidden || box.contains(e.target)) e.preventDefault(); });
 document.addEventListener('paste', e => { if (e.target !== nameEl && !(e.target.classList && e.target.closest('.post'))) e.preventDefault(); });
 box.addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
 $('#startHint').addEventListener('click', () => { hidden.focus({preventScroll:true}); setFocus(true); });
@@ -605,21 +601,6 @@ $('#next').onclick = e => { e.currentTarget.blur(); reset(); };
 $('#toBoard').onclick = () => show('board');
 
 /* ---------- finishing ---------- */
-/* runs that look automated are kept in your history but never posted */
-const MAX_WPM = 200;
-function cheatCheck(run){
-  const gaps = []; for (let i = 1; i < st.ks.length; i++) gaps.push(st.ks[i] - st.ks[i-1]);
-  if (run.wpm >= MAX_WPM) return 'faster than ' + MAX_WPM + ' wpm';
-  if (st.bulk > TEXT.length * 0.05) return 'text was entered in chunks instead of keystrokes';
-  if (gaps.length > 20){
-    const tiny = gaps.filter(g => g < 12).length / gaps.length;
-    if (tiny > 0.15) return 'too many keystrokes landed at the same instant';
-    const m = gaps.reduce((a, b) => a + b, 0) / gaps.length;
-    const sd = Math.sqrt(gaps.reduce((a, b) => a + (b - m) ** 2, 0) / gaps.length);
-    if (m > 0 && sd / m < 0.15) return 'keystroke timing was machine-even';
-  }
-  return '';
-}
 function kogasa(cov){ return 100 * (1 - Math.tanh(cov + cov**3/3 + cov**5/5)); }
 function finish(){
   st.done = true; clearInterval(ticker);
@@ -640,7 +621,6 @@ function finish(){
     text: tkey, started: st.startWall, ts: Date.now(),
     samples: st.samples
   };
-  const flag = cheatCheck(run); if (flag) run.flag = flag;
   const prevBest = bestOf(allMyRuns());
   local.runs.push(run); local.runs = local.runs.slice(-200); saveLocal();
   const isPB = !prevBest || run.wpm > prevBest.wpm;
@@ -807,7 +787,6 @@ function handleWriteErr(e){
 }
 
 function postRun(run){
-  if (run.flag) return;
   if (mode !== 'shared' || !canWrite || !uid || !local.name) return;
   writeErr = '';
   queue(async () => {
@@ -832,13 +811,7 @@ function syncName(){
 function renderPost(justPosted){
   const el = view === 'exec' ? $('#execPost') : $('#post');
   if (!el) return;
-  if (view === 'exec' && tkey === 'classes'){ el.style.display = 'none'; return; }
   const last = local.runs[local.runs.length-1];
-  if (view !== 'exec' && last && last.flag){
-    el.style.display = 'flex';
-    el.innerHTML = `<span>This run wasn't posted to the leaderboard (${esc(last.flag)}). It's still saved in your history.</span>`;
-    return;
-  }
   if (mode === 'shared' && canWrite && uid){
     if (!local.name){
       el.style.display = 'flex';
@@ -867,7 +840,7 @@ function better(a, b){
   if (TEXTS[a.text] && TEXTS[a.text].quiz) return a.pct > b.pct || (a.pct === b.pct && a.time < b.time);
   return a.wpm > b.wpm || (a.wpm === b.wpm && a.acc > b.acc);
 }
-function bestOf(runs){ return runs.reduce((b, r) => (!r.flag && better(r, b)) ? r : b, null); }
+function bestOf(runs){ return runs.reduce((b, r) => better(r, b) ? r : b, null); }
 function allMyRuns(){
   const map = new Map();
   local.runs.filter(r => runText(r) === tkey).forEach(r => map.set(r.ts, r));
@@ -895,7 +868,7 @@ function renderBoard(){
     const b = p.best;
     return `<tr class="${me ? 'me' : ''}">
       <td class="${i===0?'rank1':'muted'}">${i+1}</td>
-      <td class="name">${i===0?'<a class="crown egg" href="https://youtu.be/9cQgQIMlwWw?is=ccp0qNIFytqNz1f3" target="_blank" rel="noopener" tabindex="-1">♛</a>':i===1?'<span class="crown silver" title="2nd place">♛</span>':i===2?'<span class="crown bronze" title="3rd place">♛</span>':''}${esc(p.name)}${me?' <span class="muted">(you)</span>':''}</td>
+      <td class="name">${i===0?'<a class="crown egg" href="https://youtu.be/9cQgQIMlwWw?is=ccp0qNIFytqNz1f3" target="_blank" rel="noopener" tabindex="-1">♛</a>':''}${esc(p.name)}${me?' <span class="muted">(you)</span>':''}</td>
       ${isQ ? `<td class="r">${b.score}/${b.total}</td>
       <td class="r">${Math.round(b.pct)}%</td>
       <td class="r hide-sm muted">${fmtDur(b.time)}</td>` : `<td class="r">${Math.round(b.wpm)}</td>
@@ -1002,9 +975,7 @@ const EXEC25 = [
   ['Isabella Freitas', 'VP of Alumni Relations', 'ZK'],
   ['Giuseppe Riccobono', 'VP of Diversity, Equity, & Inclusion', 'ZK'],
   ['Angelina Fasolo', 'VP of Merchandise', 'ZK'],
-  ['Valeria Burbano', 'VP of Marketing', 'ZK'],
-  ['William (Will) Mancke', 'VP of Pledge Education (VPPE)', 'ZT'],
-  ['Logan Truso', 'VP of Pledge Education (VPPE)', 'ZT']
+  ['Valeria Burbano', 'VP of Marketing', 'ZK']
 ].map(([name, pos, pc]) => ({name, pos, pc, nat:!!(META[pos] && META[pos].nat), pillar:!!(META[pos] && META[pos].pillar)}));
 const BOARDS = {exec:{list:EXEC, label:'Fall 2026'}, exec25:{list:EXEC25, label:'2025'}};
 const B = () => (BOARDS[tkey] || BOARDS.exec).list;
@@ -1018,8 +989,8 @@ function renderExec(){
   if (ex.tab !== 'quiz') pauseAllQuizzes();
   document.querySelectorAll('#exTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === ex.tab));
   clearInterval(ex.clock);
-  if (ex.tab === 'study') (tkey === 'classes' ? renderClassStudy : tkey === 'greek' ? renderGreekStudy : renderStudy)();
-  else if (ex.tab === 'flash') (tkey === 'classes' ? renderClassFlash : tkey === 'greek' ? renderGreekFlash : renderFlash)();
+  if (ex.tab === 'study') (tkey === 'classes' ? renderClassStudy : tkey === 'greek' ? renderGreekStudy : tkey === 'know' ? renderKnowStudy : renderStudy)();
+  else if (ex.tab === 'flash') (tkey === 'classes' ? renderClassFlash : tkey === 'greek' ? renderGreekFlash : tkey === 'know' ? renderKnowFlash : renderFlash)();
   else renderQuiz();
 }
 
@@ -1094,21 +1065,16 @@ function makeQuiz(){
   const seen = new Set();
   return shuffle(pool).filter(q => !seen.has(q.prompt) && seen.add(q.prompt)).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
 }
-function startQuiz(){
-  if (tkey === 'classes' && !clSel().length) return;
-  ex.quizBy[tkey] = {sel:(tkey === 'classes' && clSel().length < CLASSES.length) ? clSel().map(c => c.name) : null, qs:(tkey === 'classes' ? makeClassQuiz : tkey === 'greek' ? makeGreekQuiz : makeQuiz)(), i:0, score:0, start:performance.now(), startWall:Date.now(), picks:[], locked:false, done:false}; renderQuiz(); }
+function startQuiz(){ ex.quizBy[tkey] = {qs:(tkey === 'classes' ? makeClassQuiz : tkey === 'greek' ? makeGreekQuiz : tkey === 'know' ? makeKnowQuiz : makeQuiz)(), i:0, score:0, start:performance.now(), startWall:Date.now(), picks:[], locked:false, done:false}; renderQuiz(); }
 
 function renderQuiz(){
   const q = ex.quizBy[tkey], body = $('#exBody');
   clearInterval(ex.clock);
   if (!q){
     body.innerHTML = `<div class="qstart"><h3>${esc(TEXTS[tkey].name)} Quiz</h3>
-      <p>${QUIZ_LEN} timed multiple-choice questions ${tkey === 'greek' ? 'on the names, symbols and order of the Greek alphabet' : tkey === 'classes' ? 'on which pledge class each brother is from and who the pledge educators were' : 'on who held each position on the ' + BOARDS[tkey].label + ' board and which pledge class each officer is from'}.<br>Use the number keys 1 to 4, or click. You can pause (<kbd>p</kbd>) or restart at any time. ${tkey === 'classes' ? 'Pick the classes you want to be quizzed on below. Results save to your history in this browser.' : 'Your best score goes on the leaderboard.'}</p>
-      ${tkey === 'classes' ? clPickerHTML() : ''}
-      <button class="btn" id="qGo" ${tkey === 'classes' && !clSel().length ? 'disabled' : ''}>start quiz <kbd style="margin-left:6px">enter</kbd></button></div>`;
-    $('#qGo').onclick = startQuiz;
-    if (tkey === 'classes') wireClPicker();
-    return;
+      <p>${QUIZ_LEN} timed multiple-choice questions ${tkey === 'know' ? 'on key facts from the weekly pledge modules' : tkey === 'greek' ? 'on the names, symbols and order of the Greek alphabet' : tkey === 'classes' ? 'on which pledge class each brother is from and who the pledge educators were' : 'on who held each position on the ' + BOARDS[tkey].label + ' board and which pledge class each officer is from'}.<br>Use the number keys 1 to 4, or click. You can pause (<kbd>p</kbd>) or restart at any time. Your best score goes on the leaderboard.</p>
+      <button class="btn" id="qGo">start quiz <kbd style="margin-left:6px">enter</kbd></button></div>`;
+    $('#qGo').onclick = startQuiz; return;
   }
   if (q.done){
     const missed = q.picks.filter(x => !x.ok);
@@ -1116,12 +1082,11 @@ function renderQuiz(){
       <div class="lbl" style="color:var(--sub)">score</div>
       <div class="qscore">${q.score}/${q.qs.length}</div>
       <p style="margin-top:12px">${Math.round(q.score / q.qs.length * 100)}% · ${fmtDur(q.time)} · ${esc(fmtTs(q.ts))}</p>
-      ${tkey === 'classes' ? `<p style="margin-top:4px;font-size:13px">${q.sel ? 'classes: ' + esc(q.sel.join(', ')) : 'all ' + CLASSES.length + ' classes'}</p>` : ''}
       <div class="post" id="execPost" style="justify-content:center"></div>
-      <div class="actions" style="margin-top:20px"><button class="btn" id="qAgain">try again <kbd style="margin-left:6px">enter</kbd></button>&nbsp;&nbsp;${tkey === 'classes' ? '' : '<button class="btn ghost" id="qBoard">🏆 leaderboard</button>&nbsp;&nbsp;'}<button class="btn ghost" id="qStudy">study sheet</button></div></div>
-      ${missed.length ? `<h2>review what you missed</h2><div class="missed">${missed.map(x => `<div>${x.q.prompt}<br><span class="you">you said: ${esc(x.pick)}</span> · <span class="ans">answer: ${esc(x.q.answer)}</span></div>`).join('')}</div>` : `<p style="text-align:center;color:var(--gold)">Perfect score. You know your ${tkey === 'classes' ? 'pledge classes' : tkey === 'greek' ? 'Greek letters' : 'exec board'}.</p>`}</div>`;
+      <div class="actions" style="margin-top:20px"><button class="btn" id="qAgain">try again <kbd style="margin-left:6px">enter</kbd></button>&nbsp;&nbsp;<button class="btn ghost" id="qBoard">🏆 leaderboard</button>&nbsp;&nbsp;<button class="btn ghost" id="qStudy">study sheet</button></div></div>
+      ${missed.length ? `<h2>review what you missed</h2><div class="missed">${missed.map(x => `<div>${x.q.prompt}<br><span class="you">you said: ${esc(x.pick)}</span> · <span class="ans">answer: ${esc(x.q.answer)}</span></div>`).join('')}</div>` : `<p style="text-align:center;color:var(--gold)">Perfect score. You know your ${tkey === 'classes' ? 'pledge classes' : tkey === 'greek' ? 'Greek letters' : tkey === 'know' ? 'DSP knowledge' : 'exec board'}.</p>`}</div>`;
     $('#qAgain').onclick = startQuiz;
-    if ($('#qBoard')) $('#qBoard').onclick = () => show('board');
+    $('#qBoard').onclick = () => show('board');
     $('#qStudy').onclick = () => { ex.tab = 'study'; renderExec(); };
     renderPost();
     return;
@@ -1141,7 +1106,7 @@ function renderQuiz(){
     <div class="qbar"><div style="width:${q.i / q.qs.length * 100}%"></div></div>
     ${ctrls}
     <div class="qprompt">${cur.prompt}</div>
-    <div class="qopts">${cur.options.map((o, i) => `<button class="qopt" data-i="${i}"><kbd>${i + 1}</kbd><span class="${cur.glyphOpts ? 'glyph' : ''}">${esc(o)}</span></button>`).join('')}</div></div>`;
+    <div class="qopts ${cur.long ? 'long' : ''}">${cur.options.map((o, i) => `<button class="qopt" data-i="${i}"><kbd>${i + 1}</kbd><span class="${cur.glyphOpts ? 'glyph' : ''}">${esc(o)}</span></button>`).join('')}</div></div>`;
   body.querySelectorAll('.qopt').forEach(b => b.onclick = () => answer(+b.dataset.i));
   wireQuizCtrls();
   const tick = () => { const el = $('#qClock'); if (el) el.textContent = fmtDur(qElapsed(q) / 1000); };
@@ -1187,10 +1152,9 @@ function finishQuiz(){
   const q = ex.quizBy[tkey];
   resumeQuiz(q); q.done = true; q.time = +(qElapsed(q) / 1000).toFixed(1); q.ts = Date.now();
   const run = {text:tkey, score:q.score, total:q.qs.length, pct:+(q.score / q.qs.length * 100).toFixed(1), time:q.time, started:q.startWall, ts:q.ts};
-  if (q.sel) run.sel = q.sel;
   local.runs.push(run); local.runs = local.runs.slice(-300); saveLocal();
   renderQuiz();
-  if (tkey !== 'classes') postRun(run);
+  postRun(run);
 }
 
 function execKey(e){
@@ -1203,8 +1167,8 @@ function execKey(e){
     if (q && !q.done && (e.key === 'p' || e.key === 'P' || e.key === 'Escape')){ e.preventDefault(); togglePause(); return; }
     if (q && !q.done && /^[1-4]$/.test(e.key)){ e.preventDefault(); answer(+e.key - 1); }
   } else if (ex.tab === 'flash'){
-    const flip = tkey === 'classes' ? clFlip : tkey === 'greek' ? grFlip : flipCard;
-    const move = tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : moveCard;
+    const flip = tkey === 'classes' ? clFlip : tkey === 'greek' ? grFlip : tkey === 'know' ? knFlip : flipCard;
+    const move = tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : tkey === 'know' ? knMove : moveCard;
     if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); flip(); }
     else if (e.key === 'ArrowRight'){ e.preventDefault(); move(1); }
     else if (e.key === 'ArrowLeft'){ e.preventDefault(); move(-1); }
@@ -1284,6 +1248,140 @@ function makeGreekQuiz(){
   return shuffle(qs).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
 }
 
+/* ---------- DSP knowledge (from pledge modules) ---------- */
+const KNOW_WEEKS = {1:'History of Delta Sigma Pi', 2:'Risk Management', 3:'Organizational Structure', 4:'Living the Purpose'};
+const KNOW = [
+  // Week 3: Organizational Structure
+  [3,'What is the key to DSP\'s organizational structure?','The Grand Chapter'],
+  [3,'Who makes up the Grand Chapter?','All collegiate chapters and franchised alumni chapters in good standing'],
+  [3,'What is DSP\'s national convention called?','The Grand Chapter Congress (GCC)'],
+  [3,'How often is the Grand Chapter Congress held?','Every odd-numbered year'],
+  [3,'About how many Deltasigs attend GCC, and how long does it last?','About 1,000 Deltasigs, for around 4 days'],
+  [3,'What is voted on and elected at GCC?','Changes to the Bylaws; the Grand President, Board of Directors and Regional Vice Presidents'],
+  [3,'How many people serve on the Board of Directors?','10: 8 elected volunteers and 2 appointed volunteers'],
+  [3,'What is the Board of Directors primarily responsible for?','Setting the Fraternity\'s strategic direction'],
+  [3,'Where are the Board of Directors\' duties listed?','Articles IV and V of the Bylaws'],
+  [3,'Name the Board of Directors\' duties.','Review and approve the annual budget, set policy and enforce the laws, and interpret the laws of the Fraternity'],
+  [3,'How is the Grand President chosen?','Elected by the Grand Chapter every 2 years; the prior one becomes Past Grand President'],
+  [3,'How many Provincial Vice Presidents are there, and how often are they elected?','5, elected every 2 years'],
+  [3,'Name the 5 provinces.','North Central, Northeastern, Southern, South Central and Western'],
+  [3,'How is the national VP of Finance chosen?','Elected by the Grand Chapter every 2 years'],
+  [3,'How is the National Collegian of the Year chosen, and what do they do?','Picked yearly from candidates sent by each active collegiate chapter; serves on the board for a 2-year term'],
+  [3,'What do Provincial Vice Presidents do?','Experienced alumni who oversee national priorities by working with and supporting the Regional Vice Presidents'],
+  [3,'Are Provincial Vice Presidents paid?','No, they are volunteers who are not compensated for their time'],
+  [3,'Who sits on the Provincial Council?','The president or a representative of each chapter in the province, the province\'s RVPs, and the Provincial VP'],
+  [3,'When does the Provincial Council meet, and what does it do?','At least once a year at the LEAD Provincial Conference, to consider Bylaw or Ritual amendments from chapters'],
+  [3,'What do Regional Vice Presidents (RVPs) do?','Lead all chapters in their region, appoint and oversee District Directors, and promote chapter expansion'],
+  [3,'How are RVPs chosen, and for how long?','Elected during GCC for a 2-year term'],
+  [3,'What do District Directors do?','Monitor each chapter in the district through regular contact with officers, and work with the chapter advisor and university'],
+  [3,'How are District Directors chosen, and for how long?','Appointed by the RVP for a 1-year term'],
+  [3,'Whose primary responsibility are DSP\'s Strategic Priorities?','The Fraternity Board of Directors'],
+  [3,'Name DSP\'s 4 Strategic Priorities.','Member Education, Membership Growth, Member Engagement and Organizational Excellence'],
+  [3,'Strategic Priority: Member Education','Equip members to excel as ethical leaders on campus and in the community'],
+  [3,'Strategic Priority: Membership Growth','Attract and retain diverse students, alumni and community leaders'],
+  [3,'Strategic Priority: Member Engagement','Give members meaningful involvement opportunities at every stage of life'],
+  [3,'Strategic Priority: Organizational Excellence','Strengthen infrastructure to support the priorities'],
+  [3,'Where is the Central Office located?','Oxford, Ohio, near Miami University'],
+  [3,'What does the Central Office staff coordinate?','Finances, PR, membership records, chapter management, national events, The Deltasig magazine and the website'],
+  [3,'What is the CMP?','The Chapter Management Program, coordinated and overseen by the Central Office'],
+  [3,'Are Central Office staff paid, and can they change the Bylaws?','They are paid, but they cannot change the Bylaws'],
+  [3,'Name the 6 Central Office staff responsibility areas.','Alumni Support, Chapter Support, Communications & Publications, Education, Finance & Administration, Leadership & Foundation'],
+  [3,'What is the Leadership Foundation?','The charitable giving arm of the Fraternity'],
+  [3,'What is the Leadership Foundation\'s mission?','Financially support educational and charitable programs that help members achieve individual and professional excellence'],
+  [3,'What does the Leadership Foundation support?','Leadership and development training, chapter leadership funds and academic scholarships'],
+  [3,'How many nationally recognized collegiate chapter positions are there?','10'],
+  [3,'Name the 10 nationally recognized positions.','President, SVP, VPPE, VP Finance, VPCO, Chancellor, VPPA, VP Community Service, VP Scholarship & Awards, VP Alumni Relations'],
+  [3,'What does LEAD stand for?','Leadership and Excellence Academies for Deltasigs'],
+  [3,'When are LEAD Schools/Summits and LEAD Provincial Conferences held?','LEAD Schools/Summits each fall; LEAD Provincial Conferences each spring'],
+  [3,'Amy Briggs','Golden Council Member'],
+  [3,'Mitch Simmons','Past Grand President'],
+  [3,'Katie Magoon','Trustee Emeritus'],
+  [3,'Mike Mallonee','Past Grand President'],
+  [3,'Darrick Williams','Golden Council Member'],
+  // Week 4: Living the Purpose
+  [4,'How does DSP live out "to foster the study of business in universities"?','By only selecting students actively enrolled in qualified business or economics programs'],
+  [4,'What if a member changes their major after joining?','That\'s okay'],
+  [4,'What are chapters encouraged to provide for their college of business?','Professional events and learning opportunities beyond the chapter, which also help marketing and recruiting'],
+  [4,'How does DSP live out "to encourage scholarship, social activity and the association of students"?','In 1945 DSP set up a charitable foundation, now the DSP Leadership Foundation'],
+  [4,'In what year did DSP establish its charitable foundation?','1945'],
+  [4,'Which events does the Leadership Foundation support training at?','LEAD Schools, LEAD Provincial Conferences, Grand Chapter Congress and Presidents\' Academy'],
+  [4,'What does LEAD give members the chance to build?','Professional, leadership and personal skills'],
+  [4,'How many official delegates does each chapter send to GCC?','1'],
+  [4,'What is Presidents\' Academy?','A national professional development program for chapter presidents'],
+  [4,'How does DSP live out "to promote a closer affiliation between the commercial world and students of commerce"?','By partnering with businesses for career, sales and affinity partnerships (insurance, finance, travel, hiring Deltasigs)'],
+  [4,'What do DSP\'s business partnerships offer?','Individual discounts, event sponsorships and hiring brothers'],
+  [4,'Name chapter events linked to affiliation with the commercial world.','Alumni panels, local business tours, alumni speakers, career fairs and corporate sponsorships'],
+  [4,'Who is a National Honorary Member?','Someone with significant contributions to business, government, education or DSP, nominated by collegiate chapters'],
+  [4,'When is a National Honorary Member initiated?','During the Grand Chapter Congress (GCC)'],
+  [4,'How does DSP live out "to further a higher standard of commercial ethics and culture and the civic and commercial welfare of the community"?','Each chapter has a VP of Community Service, backed by national and provincial community service committees'],
+  [4,'What is collected at LEAD events for community service?','Canned tabs, plus other wishlist items'],
+  [4,'What are the expectations of membership?','Attend meetings and events, pay dues, help with recruitment, and live up to the Purpose'],
+  [4,'What is an ideal member committed to?','Living up to the Purpose and Standards by giving to the Fraternity, its members and the community'],
+  [4,'An ideal member shows dedication to which three things?','Scholarship, professionalism and service'],
+  [4,'How does an ideal member handle disagreement in fraternal business?','They subordinate their individual views to the wishes of the majority'],
+  [4,'By what standard does an ideal member conduct themselves?','The highest standards of business ethics'],
+  [4,'What does an ideal member understand about investing in the Fraternity?','The more you invest in the Fraternity, the more you receive in return'],
+  [4,'What is the obligation of membership?','Remain actively supportive of the Fraternity throughout your lifetime'],
+  [4,'"It\'s not 4 years…"','"…it\'s for life." Alumni stay involved because of relationships'],
+  [4,'Besides Central Office staff, who runs DSP?','Volunteers, who give freely of their time and service'],
+  [4,'How can alumni stay involved?','Join an alumni chapter, host gatherings, join the Facebook group, and donate to the Leadership Foundation'],
+  [4,'What makes an ideal chapter?','Supports the Fraternity\'s objectives, works as a unit, and provides value to members, the university and the community'],
+  [4,'How does an ideal chapter treat the Fraternity and national standards?','Keeps open communication with the Fraternity and sponsors programs required by national standards']
+].map(([w, q, a], i) => ({w, q, a, i}));
+
+const kn = {week:'all', hide:false, shown:new Set(), fc:{week:'all', order:[], i:0, back:false}};
+const knCards = w => w === 'all' ? KNOW : KNOW.filter(c => c.w === +w);
+function knWeekOpts(cur){ return `<option value="all">all weeks</option>${Object.entries(KNOW_WEEKS).map(([n, t]) => `<option value="${n}" ${String(cur) === n ? 'selected' : ''}>Week ${n}: ${esc(t)}${knCards(n).length ? '' : ' (coming soon)'}</option>`).join('')}`; }
+
+function renderKnowStudy(){
+  const weeks = kn.week === 'all' ? Object.keys(KNOW_WEEKS) : [kn.week];
+  $('#exBody').innerHTML = `<p class="exintro">Key facts from the pledge modules, grouped by week. To test yourself, hide the answers and tap a card to reveal it.</p>
+    <div class="exbar"><label class="textsel">week <select id="knWeek">${knWeekOpts(kn.week)}</select></label>
+      <span><span class="lab">answers</span>${segHTML('sgKa', [['show','show'],['hide','hide']], kn.hide ? 'hide' : 'show')}</span></div>
+    ${weeks.map(n => {
+      const cards = knCards(n);
+      return `<div class="grouph">Week ${n} <span>${esc(KNOW_WEEKS[n])}${cards.length ? ' · ' + cards.length + ' cards' : ''}</span></div>` +
+        (cards.length ? `<div class="kgrid">${cards.map(c => { const h = kn.hide && !kn.shown.has(c.i); return `<div class="kcard ${kn.hide ? 'quizzable' : ''}" data-i="${c.i}"><div class="kq">${esc(c.q)}</div><div class="ka ${h ? 'blank' : ''}">${h ? 'tap to reveal' : esc(c.a)}</div></div>`; }).join('')}</div>`
+          : `<div class="note">Coming soon. These cards will be added from the Week ${n} Quizlet set.</div>`);
+    }).join('')}`;
+  $('#knWeek').onchange = e => { kn.week = e.target.value; e.target.blur(); renderKnowStudy(); };
+  wireSeg('sgKa', v => { kn.hide = v === 'hide'; kn.shown.clear(); renderKnowStudy(); });
+  document.querySelectorAll('.kcard.quizzable').forEach(c => c.onclick = () => { const i = +c.dataset.i; kn.shown.has(i) ? kn.shown.delete(i) : kn.shown.add(i); renderKnowStudy(); });
+}
+
+function knDeck(){ const d = knCards(kn.fc.week); return d.length ? d : KNOW; }
+function renderKnowFlash(){
+  const f = kn.fc, deck = knDeck();
+  if (f.order.length !== deck.length){ f.order = shuffle(deck.map((_, i) => i)); f.i = 0; }
+  const c = deck[f.order[f.i]];
+  const face = !f.back
+    ? `<div class="f1 kf">${esc(c.q)}</div><div class="tip">${isTouch ? 'Tap the card to flip it.' : 'Tap the card or press space to flip.'}</div>`
+    : `<div class="tip" style="margin-top:0">${esc(c.q)}</div><div class="f2 kf">${esc(c.a)}</div><div class="f3">Week ${c.w}: ${esc(KNOW_WEEKS[c.w])}</div><div class="tip">${isTouch ? 'swipe left or right for the next card' : '← → arrow keys to move between cards'}</div>`;
+  $('#exBody').innerHTML = `<div class="exbar"><label class="textsel">deck <select id="knFcWeek">${knWeekOpts(f.week)}</select></label></div>
+    <div class="flashwrap">
+      <div class="flash ${f.back ? 'back' : ''}" id="flashCard" role="button" tabindex="0" aria-label="Flip card">${face}</div>
+      <div class="fcnav"><button class="btn ghost" id="fcPrev">← prev</button><span class="count">${f.i + 1} / ${deck.length}</span><button class="btn ghost" id="fcNext">next →</button><button class="btn ghost" id="fcShuf">⤮ shuffle</button></div>
+    </div>`;
+  $('#knFcWeek').onchange = e => { f.week = e.target.value; f.order = []; f.back = false; e.target.blur(); renderKnowFlash(); };
+  $('#flashCard').onclick = knFlip;
+  $('#fcPrev').onclick = () => knMove(-1);
+  $('#fcNext').onclick = () => knMove(1);
+  $('#fcShuf').onclick = () => { f.order = shuffle(f.order); f.i = 0; f.back = false; renderKnowFlash(); };
+}
+function knFlip(){ kn.fc.back = !kn.fc.back; renderKnowFlash(); }
+function knMove(d){ const f = kn.fc, n = knDeck().length; f.i = (f.i + d + n) % n; f.back = false; renderKnowFlash(); }
+
+function makeKnowQuiz(){
+  const pool = shuffle(KNOW).slice(0, QUIZ_LEN);
+  return pool.map(c => {
+    const same = KNOW.filter(o => o !== c && o.a !== c.a && o.w === c.w);
+    const other = KNOW.filter(o => o !== c && o.a !== c.a && o.w !== c.w);
+    const seen = new Set([c.a]); const opts = [];
+    for (const o of [...shuffle(same), ...shuffle(other)]){ if (!seen.has(o.a)){ seen.add(o.a); opts.push(o.a); } if (opts.length === 3) break; }
+    return {prompt:esc(c.q), answer:c.a, options:shuffle([c.a, ...opts]), long:true};
+  });
+}
+
 /* ---------- pledge classes ---------- */
 const CLASSES = [{"name": "Zeta Lambda", "term": "Spring 2026", "pe": ["Logan Truso", "William Mancke"], "members": ["Adriana Rizzuti", "Alessia Messina", "Cade Hoffman", "Christian Claypoole", "Daniel Perret-Gentil", "Dean Lynn", "Emma Jo Jenniex", "Ian Ayres", "Isabella Thompson", "Jason Gouws", "Jose Sarraga", "Joshua Bedoya", "Kati Smith", "Lauren Sutton", "Lucca Freitas", "Mackenzie Grimmig", "Madison DiSomma", "Malu Taka", "Maria Oliveira", "Mason Rosecrans", "Miles Archer", "My-Linh Eberhard", "Sachin Budda", "Sarah Rothschild", "Steven DiMarco"]}, {"name": "Zeta Kappa", "term": "Fall 2025", "pe": ["Muharem Zdralic", "Devon Maue"], "members": ["Aidan Lacey", "Angelina Fasolo", "Daniel Lopez", "David Hernandez", "Daniel Storchevyi", "Giuseppe Riccobono", "Gladymar Rodriguez", "Isabella Freitas", "Jimena Del Barrio Flores", "Natalie Wilson", "Nikolas Sirois", "Paige Wolle", "Roberta Barreto", "Samuel Heise", "Siri Mullapudi", "Sophia Miranda", "Stephen Weaver", "Valentina Lorenzo", "Valeria Burbano", "Veronica Matsikh"]}, {"name": "Zeta Iota", "term": "Spring 2025", "pe": ["Brody Hlavaty", "Jacob Morgan"], "members": ["Advika Abhijeet Panse", "Alayna G. Myhre", "Alessandro Rinaldi", "Andy Bui", "Andrew Huy-Duc Kien", "Andrew Jacob Michel", "Analiese Kuriakose", "Anusha Rameshbabu Anna", "Ava Howell", "Bailey Grace Gayron", "Bennett Parani", "Caitlin Ann Wallsmith", "Carson Bellet", "Charles Ewing O'Brien", "Cindy Diem Dao", "Erika Grace Nordlund", "Felipe Santos", "Gage Harley Tiva", "Hannah Robison", "Isabelle Brozenec", "James Emmanuel Hicks", "Jose Alberto Alas Alvarenga", "Kiana Chutinan", "Lia Brooke Agliata", "Liam Tyler Hudson", "Marco Netto", "Mckenzie Hulett King", "Mitchel Woodrow", "Noah David Aguirre", "Paitynn Redden", "Sarah Burbank", "Shane Harry", "Sydney Payne", "Thalia Dittman", "Theodora Hirmina", "Timmy Thai Nguyen", "Tobias Martin", "Victoria Isabella Sonza", "Victoria Salcedo", "Yasmine Chiadmi"]}, {"name": "Zeta Theta", "term": "Fall 2024", "pe": ["Lauren Bolnick", "Jessica Ferrin"], "members": ["Aaron Scott Reyes", "Anthony Vega", "Arina Zaytseva", "Brooke Herzog", "Bryn Maron", "Camila Barito", "Camila Maria Deoliveira", "Christopher Mundry", "Eric Hanson", "Evan Jack Colletta", "Evan Puccio", "Glenn Farno", "Hunter Pierce", "Isabela Barsky", "Jack Brody Casey", "Joel Bernstein", "Juan Bernardo Castelo", "Landon Pierce", "Logan Connor Bancroft", "Logan John Truso", "Lydie Keita", "Mackenzee Hishon", "Marc Joseph Cruz", "Mateo Fernando Rojas", "Mateo Rubiano Rojas", "Mia Crespo", "Mia Quintana", "Natalia Osorio", "Nicole Huff", "Paula Dorado", "Phillip Johnson", "Ridgeley Sokun", "Rualt Maska", "Rylee Howell", "Samantha Knight", "Sofia Carolyn Hittinger", "Sophia Cooper", "Sophia Martins Vasconcelos", "Sydney Wagner", "William Mancke", "Wyatt Anderson"]}, {"name": "Zeta Eta", "term": "Spring 2024", "pe": ["Joaquin Arana", "James Drinkwater"], "members": ["Antoine Bali", "Austin Vetter", "Austin Wehle", "Ben Gill", "Brody Hlavaty", "Connor Steedman", "Daniel Bullock", "Devon Maue", "Gustavo Aviles", "Jacob Morgan", "Jordan Lamphere", "Kara Johnson", "Kyer Evans", "Maddie Ahearn", "Maya Gagnaire", "Melia Lemont", "Mikayla Wise", "Muharem Zdralic", "Nicole Teixeira", "Rexford Smith", "Robert Pratt", "Will Vierengel"]}, {"name": "Zeta Zeta", "term": "Spring 2024", "pe": ["Damian Truax", "Aqsa Patel"], "members": ["Amanda Bixby", "Anna Radovic", "Alisha Panchal", "Alejandra Manrique", "Brady Van Pelt", "Brandon Rossler", "Bailey Topp", "Brenic Jedrzejak", "Claire Hart", "Carlos Cisneros", "Dylan Geiger", "Haile Scandaliato", "Isabella Nina", "Jillian Grenier", "Lizzie Roethel", "Madeline Negip", "Nicholas Gilligan", "Petar Isailovic", "Philip McFarlane", "Roxette Castaneda", "Tyler Whiddon", "Vanessa Martin", "Veronica Ingannamorte", "Victoria Andueza"]}, {"name": "Zeta Epsilon", "term": "Spring 2023", "pe": ["Robert Moran", "Justin Dittmar"], "members": ["Amani Long", "Aqsa Patel", "Christina Bell", "Caleb Lindsey", "Hayley Crews", "Heather Crew", "James Drinkwater", "Johnna Noel", "Jonathon Cox", "Kailyn Terry", "Mason Chamberlin", "Meredith Garrett", "Marcus Sanchez", "Mateo Hodo", "Prachi Patel", "Sean Kirk", "Sean Walsh", "Soleil Plested", "Tania Torres Sanchez", "TJ Massiah", "Veronica Manrique", "Vienna Caprio"]}, {"name": "Zeta Delta", "term": "Fall 2022", "pe": ["McKenna Perusich", "Kayla Renert"], "members": ["Ayomikun Agbejule", "Joaquin Arana", "Lauren Bolnick", "Christopher Colin Bryant", "Chelsey Caines", "Daniela Celis", "Jesy De Sosa", "Jessica Ferrin", "Blake Flores", "Luke Graham", "Breann Johnson", "Jake Jones", "Mikaela Kwan", "AJ McGarvey", "Rachel Reina", "Emily Rushing", "Sofia Salazar", "Alyssa Snyder", "Alexis Spencer", "Alexis Woytek", "Ethan Young"]}];
 const clLabel = c => c.name + ' · ' + c.term;
@@ -1346,26 +1444,7 @@ function renderClassFlash(){
 function clFlip(){ cl.fc.back = !cl.fc.back; renderClassFlash(); }
 function clMove(d){ const f = cl.fc, n = clDeck().length; f.i = (f.i + d + n) % n; f.back = false; renderClassFlash(); }
 
-/* class picker for the quiz (remembered in this browser) */
-const CL_SEL_KEY = 'dsp-cl-quizsel';
-cl.sel = (() => { try { const v = JSON.parse(localStorage.getItem(CL_SEL_KEY)); if (Array.isArray(v)) return new Set(v.filter(n => CLASSES.some(c => c.name === n))); } catch (e) {} return new Set(CLASSES.map(c => c.name)); })();
-function saveClSel(){ try { localStorage.setItem(CL_SEL_KEY, JSON.stringify([...cl.sel])); } catch (e) {} }
-const clSel = () => CLASSES.filter(c => cl.sel.has(c.name));
-function clPickerHTML(){
-  const n = clSel().reduce((a, c) => a + c.members.length, 0);
-  return `<div class="clpick"><div class="clpick-top"><span class="lab">classes</span><button class="btn ghost sm" id="clAll">all</button><button class="btn ghost sm" id="clNone">none</button></div>
-    <div class="seg sm clpick-list">${CLASSES.map(c => `<button data-c="${esc(c.name)}" class="${cl.sel.has(c.name) ? 'on' : ''}" title="${esc(c.term)} · ${c.members.length} brothers">${esc(c.name)}</button>`).join('')}</div>
-    <div class="clpick-n">${cl.sel.size ? `${cl.sel.size === CLASSES.length ? 'all ' : ''}${cl.sel.size} class${cl.sel.size === 1 ? '' : 'es'} · ${n} brothers` : 'pick at least one class'}</div></div>`;
-}
-function wireClPicker(){
-  document.querySelectorAll('.clpick-list button').forEach(b => b.onclick = () => { const k = b.dataset.c; cl.sel.has(k) ? cl.sel.delete(k) : cl.sel.add(k); saveClSel(); renderQuiz(); });
-  $('#clAll').onclick = () => { cl.sel = new Set(CLASSES.map(c => c.name)); saveClSel(); renderQuiz(); };
-  $('#clNone').onclick = () => { cl.sel = new Set(); saveClSel(); renderQuiz(); };
-}
-
 function makeClassQuiz(){
-  const SEL = clSel();
-  if (SEL.length && SEL.length < CLASSES.length) return makeClassQuizFor(SEL);
   const pick = (arr, n) => shuffle(arr).slice(0, n);
   const qs = [];
   // which class is X from (12)
@@ -1378,37 +1457,6 @@ function makeClassQuiz(){
     const others = pick(BROS.filter(b => b.cls !== c && !c.members.includes(b.name)), 3).map(b => b.name);
     qs.push({prompt:`Which of these brothers is in <b>${esc(c.name)}</b>?`, answer:ans, opts:others});
   });
-  return shuffle(qs).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
-}
-
-// quiz limited to the chosen classes
-function makeClassQuizFor(SEL){
-  const pick = (arr, n) => shuffle(arr).slice(0, n);
-  const POOL = BROS.filter(b => SEL.includes(b.cls));
-  const OUT = BROS.filter(b => !SEL.includes(b.cls));
-  const inCls = (n, c) => c.members.includes(n);
-  const qs = [];
-  // which class is X from: only makes sense with 2+ classes; answer choices come from the chosen classes
-  if (SEL.length >= 2) pick(POOL, 10).forEach(b => qs.push({prompt:`Which pledge class is <b>${esc(b.name)}</b> from?`, answer:clLabel(b.cls), opts:pick(SEL.filter(c => c !== b.cls), 3).map(clLabel)}));
-  // pledge educators
-  pick(SEL, 4).forEach(c => qs.push({prompt:`Who were the pledge educators for <b>${esc(c.name)}</b>?`, answer:c.pe.join(' & '), opts:pick(CLASSES.filter(o => o !== c), 3).map(o => o.pe.join(' & '))}));
-  // which term did the class pledge
-  pick(SEL, 2).forEach(c => qs.push({prompt:`When did <b>${esc(c.name)}</b> pledge?`, answer:c.term, opts:pick([...new Set(CLASSES.map(o => o.term))].filter(t => t !== c.term), 3)}));
-  // fill the rest with "is in" / "is NOT in" questions, each brother used once
-  const used = new Set();
-  let flip = 0, guard = 0;
-  while (qs.length < QUIZ_LEN && guard++ < 200){
-    const c = pick(SEL, 1)[0];
-    if (flip++ % 3 !== 2){
-      const ans = pick(c.members.filter(n => !used.has(n)), 1)[0]; if (!ans) continue;
-      used.add(ans);
-      qs.push({prompt:`Which of these brothers is in <b>${esc(c.name)}</b>?`, answer:ans, opts:pick(BROS.filter(b => !inCls(b.name, c)).map(b => b.name), 3)});
-    } else {
-      const ans = pick((OUT.length ? OUT : BROS.filter(b => b.cls !== c)).map(b => b.name).filter(n => !inCls(n, c) && !used.has(n)), 1)[0]; if (!ans) continue;
-      used.add(ans);
-      qs.push({prompt:`Which of these brothers is <b>not</b> in <b>${esc(c.name)}</b>?`, answer:ans, opts:pick(c.members.filter(n => n !== ans), 3)});
-    }
-  }
   return shuffle(qs).slice(0, QUIZ_LEN).map(q => ({...q, options:shuffle([q.answer, ...q.opts])}));
 }
 
@@ -1428,7 +1476,7 @@ document.addEventListener('touchend', e => {
   if (Math.abs(dx) < 50) return;
   swiped = true;
   const d = dx < 0 ? 1 : -1;
-  (tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : moveCard)(d);
+  (tkey === 'classes' ? clMove : tkey === 'greek' ? grMove : tkey === 'know' ? knMove : moveCard)(d);
 }, {passive:true});
 document.addEventListener('click', e => { if (swiped && e.target.closest && e.target.closest('#flashCard')){ e.stopPropagation(); e.preventDefault(); swiped = false; } }, true);
 

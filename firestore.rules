@@ -3,7 +3,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function boards() {
-      return ['scores', 'scores-rose', 'scores-greek', 'scores-exec', 'scores-exec25', 'scores-classes'];
+      return ['scores', 'scores-rose', 'scores-greek', 'scores-exec', 'scores-exec25', 'scores-classes', 'scores-know'];
     }
     function validEntry(coll) {
       let d = request.resource.data;
