@@ -207,7 +207,8 @@
   .flash .glyph{font-family:'Times New Roman',Georgia,serif;font-size:96px;color:var(--gold);line-height:1}
   .qprompt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:56px;color:var(--gold);display:block;margin:8px 0 4px}
   .qopt .glyph{font-family:'Times New Roman',Georgia,serif;font-size:28px;color:var(--gold)}
-  .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+  .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;align-items:start;grid-auto-flow:row dense}
+  .kcard.wide{grid-column:1 / -1}
   .kcard{background:var(--bg2);border-radius:12px;padding:14px 16px;border:1px solid transparent}
   .kcard.quizzable{cursor:pointer} .kcard.quizzable:hover{border-color:var(--gold-dim)}
   .kcard .kq{font-size:14px;color:var(--text);font-weight:600;line-height:1.4}
@@ -1450,7 +1451,7 @@ function renderKnowStudy(){
     ${weeks.map(n => {
       const cards = knCards(n);
       return `<div class="grouph">Week ${n} <span>${esc(KNOW_WEEKS[n])}${cards.length ? ' · ' + cards.length + ' cards' : ''}</span></div>` +
-        (cards.length ? `<div class="kgrid">${cards.map(c => { const h = kn.hide && !kn.shown.has(c.i); return `<div class="kcard ${kn.hide ? 'quizzable' : ''}" data-i="${c.i}"><div class="kq">${esc(c.q)}</div><div class="ka ${h ? 'blank' : ''}">${h ? 'tap to reveal' : esc(c.a)}</div></div>`; }).join('')}</div>`
+        (cards.length ? `<div class="kgrid">${cards.map(c => { const h = kn.hide && !kn.shown.has(c.i); return `<div class="kcard ${kn.hide ? 'quizzable' : ''} ${c.a.length > 220 ? 'wide' : ''}" data-i="${c.i}"><div class="kq">${esc(c.q)}</div><div class="ka ${h ? 'blank' : ''}">${h ? 'tap to reveal' : esc(c.a)}</div></div>`; }).join('')}</div>`
           : `<div class="note">Coming soon.</div>`);
     }).join('')}`;
   $('#knWeek').onchange = e => { kn.week = e.target.value; e.target.blur(); renderKnowStudy(); };
