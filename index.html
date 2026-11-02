@@ -211,8 +211,8 @@
   .kcard{background:var(--bg2);border-radius:12px;padding:14px 16px;border:1px solid transparent}
   .kcard.quizzable{cursor:pointer} .kcard.quizzable:hover{border-color:var(--gold-dim)}
   .kcard .kq{font-size:14px;color:var(--text);font-weight:600;line-height:1.4}
-  .kcard .ka{font-size:14px;color:var(--gold);margin-top:8px;line-height:1.45}
-  .flash .f1.kf{font-size:24px} .flash .f2.kf{font-size:20px;line-height:1.4}
+  .kcard .ka{font-size:14px;color:var(--gold);margin-top:8px;line-height:1.45;white-space:pre-line}
+  .flash .f1.kf{font-size:24px} .flash .f2.kf{font-size:20px;line-height:1.4;white-space:pre-line}
   .qopts.long{grid-template-columns:1fr} .qopts.long .qopt{font-size:15px;line-height:1.4}
   .blank{color:var(--sub2) !important;font-style:italic;font-weight:400 !important}
   .pc.blank{background:transparent;border:1px dashed var(--sub2)}
@@ -411,7 +411,7 @@ const TEXTS = {
   rose: {song:'https://www.youtube.com/watch?v=rD4NK91GH78', name:'Rose of Deltasig', sub:'rose of deltasig', img:'logo-rose.png', alt:'Rose of Delta Sig sheet music cover', coll:'scores-rose', foot:'text: chorus of Rose of Deltasig, words and music by Paul H. Coughlin (Mu Chapter)',
     text:"Rose of Deltasig I love you, Rose of Delta Sigma Pi, When the shades of night are falling I dream of days gone by; As I go thru life's long journey, Memories will never die, I will always hear you calling, Rose of Delta Sigma Pi."},
   classes: {name:'Pledge Classes', sub:'pledge classes', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-classes', quiz:true, foot:'study mode: every pledge class from Zeta Delta to Zeta Lambda, with pledge educators', text:''},
-  know: {name:'DSP Knowledge', sub:'dsp knowledge', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-know', quiz:true, foot:'study mode: key facts from the weekly pledge modules', text:''},
+  know: {name:'DSP Knowledge', sub:'dsp knowledge', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-know', quiz:true, foot:'study mode: key facts from the weekly pledge modules (weeks 1–4)', text:''},
   greek: {name:'Greek Letters', sub:'greek letters', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-greek', quiz:true, foot:'study mode: all 24 letters of the Greek alphabet', text:''},
   exec25: {name:'Executive Board 25’', sub:'executive board 25’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec25', quiz:true, foot:'study mode: the 2025 executive board, their positions and pledge classes', text:''},
   exec: {name:'Executive Board 26’', sub:'executive board 26’', img:'logo-seal.png', alt:'Delta Sigma Pi seal', coll:'scores-exec', quiz:true, foot:'study mode: the Fall 2026 executive board, their positions and pledge classes', text:''}
@@ -990,7 +990,7 @@ const EXEC = [
   ['Victoria (Tori) Sonza', 'VP of Alumni Relations', '', 'ZI', 1, 0],
   ['My-Linh Eberhard', 'VP of Diversity, Equity, & Inclusion', '', 'ZL', 0, 0],
   ['Isabelle Brozenec', 'VP of Merchandise', '', 'ZI', 0, 0],
-  ['Malu Taka', 'VP of Marketing', '', 'ZL', 1, 0],
+  ['Malu Taka', 'VP of Marketing', '', 'ZL', 0, 0],
   ['Bennett Parani', 'VP of Pledge Education', 'VPPE', 'ZI', 1, 0],
   ['Sydney Payne', 'VP of Pledge Education', 'VPPE', 'ZI', 1, 0]
 ].map(([name, title, abbr, pc, nat, pillar]) => ({name, pos: title + (abbr ? ' (' + abbr + ')' : ''), pc, nat:!!nat, pillar:!!pillar}));
@@ -1296,82 +1296,146 @@ function makeGreekQuiz(){
 /* ---------- DSP knowledge (from pledge modules) ---------- */
 const KNOW_WEEKS = {1:'History of Delta Sigma Pi', 2:'Risk Management', 3:'Organizational Structure', 4:'Living the Purpose'};
 const KNOW = [
-  // Week 3: Organizational Structure
-  [3,'What is the key to DSP\'s organizational structure?','The Grand Chapter'],
-  [3,'Who makes up the Grand Chapter?','All collegiate chapters and franchised alumni chapters in good standing'],
-  [3,'What is DSP\'s national convention called?','The Grand Chapter Congress (GCC)'],
-  [3,'How often is the Grand Chapter Congress held?','Every odd-numbered year'],
-  [3,'About how many Deltasigs attend GCC, and how long does it last?','About 1,000 Deltasigs, for around 4 days'],
-  [3,'What is voted on and elected at GCC?','Changes to the Bylaws; the Grand President, Board of Directors and Regional Vice Presidents'],
-  [3,'How many people serve on the Board of Directors?','10: 8 elected volunteers and 2 appointed volunteers'],
-  [3,'What is the Board of Directors primarily responsible for?','Setting the Fraternity\'s strategic direction'],
-  [3,'Where are the Board of Directors\' duties listed?','Articles IV and V of the Bylaws'],
-  [3,'Name the Board of Directors\' duties.','Review and approve the annual budget, set policy and enforce the laws, and interpret the laws of the Fraternity'],
-  [3,'How is the Grand President chosen?','Elected by the Grand Chapter every 2 years; the prior one becomes Past Grand President'],
-  [3,'How many Provincial Vice Presidents are there, and how often are they elected?','5, elected every 2 years'],
-  [3,'Name the 5 provinces.','North Central, Northeastern, Southern, South Central and Western'],
-  [3,'How is the national VP of Finance chosen?','Elected by the Grand Chapter every 2 years'],
-  [3,'How is the National Collegian of the Year chosen, and what do they do?','Picked yearly from candidates sent by each active collegiate chapter; serves on the board for a 2-year term'],
-  [3,'What do Provincial Vice Presidents do?','Experienced alumni who oversee national priorities by working with and supporting the Regional Vice Presidents'],
-  [3,'Are Provincial Vice Presidents paid?','No, they are volunteers who are not compensated for their time'],
-  [3,'Who sits on the Provincial Council?','The president or a representative of each chapter in the province, the province\'s RVPs, and the Provincial VP'],
-  [3,'When does the Provincial Council meet, and what does it do?','At least once a year at the LEAD Provincial Conference, to consider Bylaw or Ritual amendments from chapters'],
-  [3,'What do Regional Vice Presidents (RVPs) do?','Lead all chapters in their region, appoint and oversee District Directors, and promote chapter expansion'],
-  [3,'How are RVPs chosen, and for how long?','Elected during GCC for a 2-year term'],
-  [3,'What do District Directors do?','Monitor each chapter in the district through regular contact with officers, and work with the chapter advisor and university'],
-  [3,'How are District Directors chosen, and for how long?','Appointed by the RVP for a 1-year term'],
-  [3,'Whose primary responsibility are DSP\'s Strategic Priorities?','The Fraternity Board of Directors'],
-  [3,'Name DSP\'s 4 Strategic Priorities.','Member Education, Membership Growth, Member Engagement and Organizational Excellence'],
-  [3,'Strategic Priority: Member Education','Equip members to excel as ethical leaders on campus and in the community'],
-  [3,'Strategic Priority: Membership Growth','Attract and retain diverse students, alumni and community leaders'],
-  [3,'Strategic Priority: Member Engagement','Give members meaningful involvement opportunities at every stage of life'],
-  [3,'Strategic Priority: Organizational Excellence','Strengthen infrastructure to support the priorities'],
-  [3,'Where is the Central Office located?','Oxford, Ohio, near Miami University'],
-  [3,'What does the Central Office staff coordinate?','Finances, PR, membership records, chapter management, national events, The Deltasig magazine and the website'],
-  [3,'What is the CMP?','The Chapter Management Program, coordinated and overseen by the Central Office'],
-  [3,'Are Central Office staff paid, and can they change the Bylaws?','They are paid, but they cannot change the Bylaws'],
-  [3,'Name the 6 Central Office staff responsibility areas.','Alumni Support, Chapter Support, Communications & Publications, Education, Finance & Administration, Leadership & Foundation'],
-  [3,'What is the Leadership Foundation?','The charitable giving arm of the Fraternity'],
-  [3,'What is the Leadership Foundation\'s mission?','Financially support educational and charitable programs that help members achieve individual and professional excellence'],
-  [3,'What does the Leadership Foundation support?','Leadership and development training, chapter leadership funds and academic scholarships'],
-  [3,'How many nationally recognized collegiate chapter positions are there?','10'],
-  [3,'Name the 10 nationally recognized positions.','President, SVP, VPPE, VP Finance, VPCO, Chancellor, VPPA, VP Community Service, VP Scholarship & Awards, VP Alumni Relations'],
-  [3,'What does LEAD stand for?','Leadership and Excellence Academies for Deltasigs'],
-  [3,'When are LEAD Schools/Summits and LEAD Provincial Conferences held?','LEAD Schools/Summits each fall; LEAD Provincial Conferences each spring'],
-  [3,'Amy Briggs','Golden Council Member'],
-  [3,'Mitch Simmons','Past Grand President'],
-  [3,'Katie Magoon','Trustee Emeritus'],
-  [3,'Mike Mallonee','Past Grand President'],
-  [3,'Darrick Williams','Golden Council Member'],
-  // Week 4: Living the Purpose
-  [4,'How does DSP live out "to foster the study of business in universities"?','By only selecting students actively enrolled in qualified business or economics programs'],
-  [4,'What if a member changes their major after joining?','That\'s okay'],
-  [4,'What are chapters encouraged to provide for their college of business?','Professional events and learning opportunities beyond the chapter, which also help marketing and recruiting'],
-  [4,'How does DSP live out "to encourage scholarship, social activity and the association of students"?','In 1945 DSP set up a charitable foundation, now the DSP Leadership Foundation'],
-  [4,'In what year did DSP establish its charitable foundation?','1945'],
-  [4,'Which events does the Leadership Foundation support training at?','LEAD Schools, LEAD Provincial Conferences, Grand Chapter Congress and Presidents\' Academy'],
-  [4,'What does LEAD give members the chance to build?','Professional, leadership and personal skills'],
-  [4,'How many official delegates does each chapter send to GCC?','1'],
-  [4,'What is Presidents\' Academy?','A national professional development program for chapter presidents'],
-  [4,'How does DSP live out "to promote a closer affiliation between the commercial world and students of commerce"?','By partnering with businesses for career, sales and affinity partnerships (insurance, finance, travel, hiring Deltasigs)'],
-  [4,'What do DSP\'s business partnerships offer?','Individual discounts, event sponsorships and hiring brothers'],
-  [4,'Name chapter events linked to affiliation with the commercial world.','Alumni panels, local business tours, alumni speakers, career fairs and corporate sponsorships'],
-  [4,'Who is a National Honorary Member?','Someone with significant contributions to business, government, education or DSP, nominated by collegiate chapters'],
-  [4,'When is a National Honorary Member initiated?','During the Grand Chapter Congress (GCC)'],
-  [4,'How does DSP live out "to further a higher standard of commercial ethics and culture and the civic and commercial welfare of the community"?','Each chapter has a VP of Community Service, backed by national and provincial community service committees'],
-  [4,'What is collected at LEAD events for community service?','Canned tabs, plus other wishlist items'],
-  [4,'What are the expectations of membership?','Attend meetings and events, pay dues, help with recruitment, and live up to the Purpose'],
-  [4,'What is an ideal member committed to?','Living up to the Purpose and Standards by giving to the Fraternity, its members and the community'],
-  [4,'An ideal member shows dedication to which three things?','Scholarship, professionalism and service'],
-  [4,'How does an ideal member handle disagreement in fraternal business?','They subordinate their individual views to the wishes of the majority'],
-  [4,'By what standard does an ideal member conduct themselves?','The highest standards of business ethics'],
-  [4,'What does an ideal member understand about investing in the Fraternity?','The more you invest in the Fraternity, the more you receive in return'],
-  [4,'What is the obligation of membership?','Remain actively supportive of the Fraternity throughout your lifetime'],
-  [4,'"It\'s not 4 years…"','"…it\'s for life." Alumni stay involved because of relationships'],
-  [4,'Besides Central Office staff, who runs DSP?','Volunteers, who give freely of their time and service'],
-  [4,'How can alumni stay involved?','Join an alumni chapter, host gatherings, join the Facebook group, and donate to the Leadership Foundation'],
-  [4,'What makes an ideal chapter?','Supports the Fraternity\'s objectives, works as a unit, and provides value to members, the university and the community'],
-  [4,'How does an ideal chapter treat the Fraternity and national standards?','Keeps open communication with the Fraternity and sponsors programs required by national standards']
+  // Week 1
+  [1,"Who are the 4 founders of Delta Sigma Pi?","Alexander Frank Makay, Alfred Moysello, Henry Albert Tienken and Harold Valentine Jacobs"],
+  [1,"What is the Purpose of Delta Sigma Pi?","Delta Sigma Pi is a professional fraternity organized to foster the study of business in universities; to encourage scholarship, social activity and the association of students for their mutual advancement by research and practice; to promote closer affiliation between the commercial world and students of commerce, and to further a higher standard of commercial ethics and culture and the civic and commercial welfare of the community."],
+  [1,"When was Delta Sigma Pi founded?","Nov. 7, 1907"],
+  [1,"What is the flower of Delta Sigma Pi?","Rose"],
+  [1,"When did the Central Office relocate?","1957"],
+  [1,"Where is the Central Office located today?","330 South Campus Avenue, Oxford, OH"],
+  [1,"Where was the first Central Office located?","222 West Adams Street, Chicago, IL"],
+  [1,"When was the standardized initiation ritual implemented?","1921"],
+  [1,"When was it unanimously decided that women would be allowed to join?","1975"],
+  [1,"When and where was the Beta Chapter founded?","1914, at Northwestern University Night School"],
+  [1,"When and where was the Gamma Chapter founded?","1916, at Boston University"],
+  [1,"When did H. G. \"Gig\" Wright's tenure start?","1924"],
+  [1,"When was the first female Grand President elected, and who was she?","2001, Kathy Jahnke"],
+  [1,"When and where was the centennial celebration?","2007, in Orlando, Florida"],
+  [1,"When was the first African American Grand President elected, and who was he?","2013, Onuka Ibe"],
+  [1,"When was the 300th chapter installed?","2019"],
+  [1,"What is the shorthand for Delta Sigma Pi?","Deltasig"],
+  [1,"Where was Delta Sigma Pi founded?","New York University School of Commerce, Accounts, and Finance"],
+  [1,"Who established the Central Office and served as its executive director for 31 years?","H. G. \"Gig\" Wright"],
+  [1,"What are the Greek letters of Delta Sigma Pi?","Delta (Δ) Sigma (Σ) Pi (Π)"],
+  [1,"What are the colors of Delta Sigma Pi?","Old Gold & Royal Purple"],
+  [1,"How many chapters did H. G. \"Gig\" Wright help establish?","80 chapters"],
+  [1,"How many chapters did H. G. \"Gig\" Wright establish as Grand President?","29 chapters"],
+  [1,"When was the Theta Sigma Chapter established?","1970"],
+  [1,"What is the name of the UCF chapter of Delta Sigma Pi?","Theta Sigma"],
+  // Week 2
+  [2,"What is the purpose of a risk management policy?","To identify potential problems BEFORE they occur"],
+  [2,"True or false: risk management is something we do in our everyday lives.","True"],
+  [2,"Who does the risk management policy apply to?","All members of Delta Sigma Pi, known as \"Organizational Members\""],
+  [2,"Who is responsible for making sure their guests and volunteers know about and follow the policy?","Organizational Members"],
+  [2,"What are the categories of the Risk Management & Code of Conduct Policies?","- Individual code of conduct\n- Chapter houses & meeting facilities\n- Alcohol, drugs & fraternity events\n- Hazing\n- Discrimination\n- Sexual misconduct\n- Assault & battery\n- Weapons, firearms, explosives & incendiary devices\n- Retaliation"],
+  [2,"What is the individual code of conduct?","Treat people how you want to be treated. Don't lie, cheat or steal. Treat others equally and with respect. Keep DSP's brand safe. Take responsibility for your guests. Follow the laws."],
+  [2,"Can chapters of DSP own, rent or lease a house?","No, it's prohibited"],
+  [2,"What are the regulations on alcohol, drugs and fraternity events?","No underage drinking and no alcohol on organizational premises or at professional events (including any event the org sponsors or endorses). Where alcohol is allowed, it must come from an insured third-party vendor or a BYOB system. All events must be invitation only."],
+  [2,"Where alcohol is allowed, how must it be provided?","By an insured third-party vendor, or brought by individual members in a BYOB system"],
+  [2,"Who can attend fraternity events?","Invited guests only. All events must be invitation only"],
+  [2,"What are the regulations on hazing?","Don't do it, and don't allow it to happen to you or others"],
+  [2,"What is hazing?","Any intentional, knowing or reckless act, by one person or a group, against anyone (regardless of affiliation) for the purpose of recruiting, joining, pledging, initiating, admitting, affiliating or retaining membership, that causes someone to perform activities listed in the policy, regardless of their willingness to participate."],
+  [2,"Does someone's willingness to participate make an act not hazing?","No. It's hazing regardless of a person's willingness to participate"],
+  [2,"What types of discrimination are prohibited?","- Race\n- Ethnicity\n- Creed\n- Religion\n- Sex\n- Sexual orientation\n- Gender identity\n- Marital status\n- National origin\n- Age\n- Disability\n- Veteran status"],
+  [2,"What is the sexual misconduct policy?","No organizational member or guest will engage in or permit sexist or sexually abusive behavior, sexual harassment, non-consensual sexual activity, sexual violence, domestic violence, dating violence, stalking or sexual exploitation."],
+  [2,"What is the policy on assault & battery?","No chapter, member or guest will engage in assault and battery, as defined by the state statutes where the activity or event occurs"],
+  [2,"What is the policy on weapons, firearms, explosives and incendiary devices?","Not allowed at national, provincial or regional fraternity events. Depending on local laws and campus policy, they may be allowed at local chapter events."],
+  [2,"What is the retaliation policy?","DSP prohibits retaliation against anyone (members or non-members) for reporting, inquiring about or cooperating with a report of a risk management violation"],
+  [2,"Who was Norm Kromberg?","Grand President (1997–2001) and 2019 Lifetime Achievement Honoree"],
+  [2,"Where should you go for help?","Your chapter advisor or other university officials. For immediate or emergency help, call 911 or campus security."],
+  [2,"Who is Dr. Lori Hart?","Director of Educational Initiatives"],
+  [2,"Who is Holmes Murphy?","Delta Sigma Pi's insurance broker"],
+  [2,"Who is Claire Sammon Roberts?","2017 Lifetime Achievement Honoree and Golden Council Member"],
+  // Week 3
+  [3,"What is the Grand Chapter?","The supreme body of the Fraternity, in which all legislative powers are vested"],
+  [3,"What is the key to DSP's organizational structure?","The Grand Chapter"],
+  [3,"What is the Grand Chapter made up of?","Collegiate chapters and franchised alumni chapters in good standing"],
+  [3,"As members of the Grand Chapter, what can chapters do?","Propose amendments to the Bylaws and changes to the Ritual, debate their merits, and vote for or against the proposals"],
+  [3,"What is the Grand Chapter Congress?","The biennial meeting of the Grand Chapter (GCC)"],
+  [3,"When is the GCC held?","Every odd-numbered year"],
+  [3,"Who represents every chapter in good standing at the GCC?","An official delegate"],
+  [3,"What happens at the GCC?","New Bylaws are debated and enacted, the Board of Directors is elected, educational sessions are held, and there are social and networking opportunities"],
+  [3,"About how many Deltasigs attend GCC, and how long does it last?","About 1,000 Deltasigs, for around 4 days"],
+  [3,"How many volunteers are elected to the Board of Directors?","8"],
+  [3,"How many volunteers are appointed to the Board of Directors?","2"],
+  [3,"What is the Board of Directors primarily responsible for?","Setting the strategic direction of the Fraternity"],
+  [3,"Which articles of the Bylaws list the Board of Directors' duties and powers?","Articles IV and V"],
+  [3,"What are some of the Board of Directors' duties?","Review and approve the annual budget, set policy and enforce strict observance of the Laws of the Fraternity, and provide interpretations of the Laws"],
+  [3,"How often is the Grand President elected by the Grand Chapter?","Every 2 years"],
+  [3,"When does someone become a Past Grand President?","When a new Grand President is elected, the prior Grand President becomes the Past Grand President"],
+  [3,"Who elects Provincial Vice Presidents, and how often?","The chapters in the Province, every 2 years"],
+  [3,"How many Provinces are there, and what are they?","5: North Central, Northeastern, Southern, South Central and Western"],
+  [3,"How often is the Vice President–Finance elected?","Every 2 years"],
+  [3,"How is a National Collegian of the Year chosen?","Selected each year from candidates submitted by each active collegiate chapter"],
+  [3,"How long does the National Collegian of the Year serve on the board?","A 2-year term"],
+  [3,"Are Provincial Vice Presidents (PVPs) compensated for their time?","No"],
+  [3,"What do PVPs do?","Oversee the efforts of achieving national priorities, directives, goals and objectives by working with Regional Vice Presidents"],
+  [3,"Who are the members of the Provincial Council?","The president or a representative of each collegiate and alumni chapter in the province, the province's Regional Vice Presidents, and the Provincial Vice President"],
+  [3,"When does the Provincial Council meet?","At least once a year, during the LEAD Provincial Conference"],
+  [3,"What does the Provincial Council consider when it meets?","Amendments to the Bylaws or Ritual submitted by chapters within the Province"],
+  [3,"What do Regional Vice Presidents do?","Guide and lead all chapters in their Region, appoint and oversee District Directors, promote chapter expansion and reactivation, and share the Fraternity's programs and goals"],
+  [3,"How often is a Regional Vice President (RVP) elected?","Every 2 years"],
+  [3,"What do District Directors do?","Monitor each chapter in the District through regular contact with its officers, and work with the Chapter Advisor, faculty and college officials"],
+  [3,"Who appoints District Directors?","Regional Vice Presidents"],
+  [3,"How long is a District Director's term?","1 year"],
+  [3,"What are Delta Sigma Pi's Strategic Priorities?","Member Education, Membership Growth, Member Engagement and Organizational Excellence"],
+  [3,"Whose primary responsibility are the Strategic Priorities?","The Fraternity Board of Directors"],
+  [3,"What is the Member Education priority about?","Equipping members to serve as ethical leaders on campus and in the community"],
+  [3,"What is the Membership Growth priority about?","Attracting and retaining diverse students, alumni and community leaders"],
+  [3,"What is the Member Engagement priority about?","Providing members with meaningful involvement opportunities at every stage of life"],
+  [3,"What is the Organizational Excellence priority about?","Strengthening infrastructure to support the priorities"],
+  [3,"Where is the Central Office located?","Oxford, Ohio, near Miami University"],
+  [3,"What does the Central Office staff do?","Keeps info on successful chapter programs and best practices, visits chapters to give advice, oversees the Chapter Management Program (CMP), and plans logistics for GCC and LEAD"],
+  [3,"What is the CMP?","The Chapter Management Program, coordinated and overseen by the Central Office"],
+  [3,"What are the Central Office staff's responsibility areas?","Alumni Support, Chapter Support, Communications & Publications, Education, Finance & Administration, and Leadership Foundation"],
+  [3,"Does the Central Office staff set or enforce policy and directives?","Enforce"],
+  [3,"Are Central Office staff paid?","Yes, they are paid staff, but they can't change the Bylaws"],
+  [3,"What is the charitable giving arm of the Fraternity?","The Delta Sigma Pi Leadership Foundation"],
+  [3,"What is the mission of the Leadership Foundation?","To financially support educational and charitable programs that enable members of DSP to achieve individual and professional excellence"],
+  [3,"What does the Leadership Foundation support?","Leadership development and training, Chapter Leadership Funds, and academic scholarships"],
+  [3,"How many officer positions are nationally recognized?","10"],
+  [3,"What are the 10 nationally recognized officer positions?","- President (Hannah Robison)\n- Senior Vice President (Analiese Kuriakose)\n- VP Pledge Education (Bennett Parani & Sydney Payne)\n- VP Finance (David Hernandez)\n- VP Chapter Operations (Andrew Kien)\n- Chancellor (Daniel Storchevyi)\n- VP Professional Activities (Veronica Matsikh)\n- VP Community Service (Natalie Wilson)\n- VP Scholarship & Awards (Jimena Del Barrio Flores)\n- VP Alumni Relations (Victoria Sonza)"],
+  [3,"Which positions on the Theta Sigma board aren't nationally recognized?","- VP Brotherhood (Nikolas Sirois)\n- VP Sponsorship & Fundraising (Siri Mullapudi)\n- VP Merchandise (Isabelle Brozenec)\n- VP Diversity, Equity & Inclusion (My-Linh Eberhard)\n- VP Marketing (Malu Taka)"],
+  [3,"When do LEAD Schools / LEAD Summits meet?","Each fall"],
+  [3,"When do the LEAD Provincial Conferences meet?","Each spring"],
+  [3,"What does LEAD stand for?","Leadership and Excellence Academies for Deltasigs"],
+  [3,"Amy Briggs","Golden Council Member"],
+  [3,"Mitch Simmons","Past Grand President"],
+  [3,"Katie Magoon","Trustee Emeritus"],
+  [3,"Mike Mallonee","Past Grand President"],
+  [3,"Darrick Williams","Golden Council Member"],
+  [3,"Why does Amy Briggs (Golden Council Member) volunteer?","She can't imagine her life without it. It started as a way to give back for everything she's received, and now it's rewarding in a way she can't describe."],
+  [3,"Why does Mitch Simmons (Past Grand President) volunteer?","To perpetuate the connection of brotherhood and lifelong friendship for those who follow and will one day lead"],
+  [3,"Why does Katie Magoon (Trustee Emeritus) volunteer?","It's rewarding personally and professionally, and has helped her build strong leadership skills and new learning opportunities"],
+  [3,"Why does Mike Mallonee (Past Grand President) volunteer?","He helped his adoptive chapter win the national award for outstanding chapter 3 times in 5 years"],
+  [3,"Why does Darrick Williams (Golden Council Member) volunteer?","His passion for the organization drives him to give back and inspire others to continue their Deltasig journey for life"],
+  // Week 4
+  [4,"How does DSP foster the study of business in universities?","Through membership (being actively engaged in the study of business) and local chapter activities (professional events and learning opportunities)"],
+  [4,"Who can DSP select as members?","Only students actively enrolled in qualified business or economics programs (changing your major afterward is okay)"],
+  [4,"How does DSP encourage scholarship, social activity and the association of students?","Through the Delta Sigma Pi Leadership Foundation, which funds the leadership development and training offered by LEAD schools"],
+  [4,"In what year did DSP establish its charitable foundation (now the Leadership Foundation)?","1945"],
+  [4,"What does LEAD give members the chance to build?","Professional, leadership and personal skills"],
+  [4,"What does the Presidents' Academy do?","Helps chapter presidents develop their leadership potential in a way that benefits them personally, the chapters they lead, and the Fraternity as a whole"],
+  [4,"How does DSP promote a closer affiliation between the commercial world and students of commerce?","It partners with the business community on career, sales and affinity partnerships, including companies in insurance, finance, travel and those seeking to hire Deltasigs"],
+  [4,"What do DSP's business partnerships offer?","Individual discounts, event sponsorships and hiring brothers"],
+  [4,"Name chapter events linked to affiliation with the commercial world.","Alumni panels, local business tours, alumni speakers, assisting at career fairs, and pursuing corporate sponsorships"],
+  [4,"What does DSP offer in recognition of substantial achievement and significant contribution in business, government, education and ethics?","Honorary memberships"],
+  [4,"Can honorary memberships be given to those in undergraduate studies?","No"],
+  [4,"When is a National Honorary Member initiated, and who nominates them?","During the Grand Chapter Congress (GCC); nominated by collegiate chapters"],
+  [4,"How does DSP further a higher standard of commercial ethics and culture, and the civic and commercial welfare of the community?","Each collegiate chapter has a VP of Community Service to encourage community service initiatives and the Fraternity's national initiatives every year"],
+  [4,"What is collected at LEAD events for community service?","Canned tabs, plus other wishlist items"],
+  [4,"What are the expectations that come with membership?","- Attending meetings\n- Attending events\n- Paying dues\n- Assisting in recruitment of new members\n- Striving to live up to the Purpose in your actions"],
+  [4,"What is an ideal member?","Someone committed to:\n- Living the Purpose\n- Giving to the Fraternity of their time and talent\n- Conducting themselves in an ethical manner\n- Actively supporting the Fraternity"],
+  [4,"How does an ideal member handle disagreement in fraternal business?","They subordinate their individual views to the wishes of the majority"],
+  [4,"What does an ideal member understand about investing in the Fraternity?","The more you invest in the Fraternity, the more you receive in return"],
+  [4,"What is the obligation of membership?","Remain actively supportive of the Fraternity throughout your lifetime"],
+  [4,"\"It's not 4 years…\"","\"…it's for life.\""],
+  [4,"What's a reason for alumni to stay involved in Delta Sigma Pi?","The amazing relationships they developed over the years, plus the career and personal development opportunities they've been able to take advantage of"],
+  [4,"Besides Central Office staff, who runs DSP?","Volunteers, who give freely of their time and service"],
+  [4,"What are some ways to stay involved as an alumni member?","- Join an alumni chapter\n- Host gatherings of brothers visiting a geographic location\n- Join or create a Facebook group\n- Donate to the Leadership Foundation\n- Serve in an elected or appointed volunteer leadership role"],
+  [4,"What does the ideal chapter do?","- Supports the objectives of the Fraternity\n- Works as a unit\n- Provides value to members, the university and the greater community\n- Maintains open communication with the Fraternity"],
+  [4,"What CMP level indicates a chapter is operationally sound, functioning within national guidelines and aligned with the Fraternity's strategic direction?","Strong Health"],
+  [4,"What Fraternity functions does the Leadership Foundation financially support?","- Leadership and training programs at national events\n- Management of Chapter Leadership Funds (CLF)\n- Educational scholarships for members\n- The Collegian of the Year (COY) program"],
 ].map(([w, q, a], i) => ({w, q, a, i}));
 
 const kn = {week:'all', hide:false, shown:new Set(), fc:{week:'all', order:[], i:0, back:false}};
@@ -1387,7 +1451,7 @@ function renderKnowStudy(){
       const cards = knCards(n);
       return `<div class="grouph">Week ${n} <span>${esc(KNOW_WEEKS[n])}${cards.length ? ' · ' + cards.length + ' cards' : ''}</span></div>` +
         (cards.length ? `<div class="kgrid">${cards.map(c => { const h = kn.hide && !kn.shown.has(c.i); return `<div class="kcard ${kn.hide ? 'quizzable' : ''}" data-i="${c.i}"><div class="kq">${esc(c.q)}</div><div class="ka ${h ? 'blank' : ''}">${h ? 'tap to reveal' : esc(c.a)}</div></div>`; }).join('')}</div>`
-          : `<div class="note">Coming soon. These cards will be added from the Week ${n} Quizlet set.</div>`);
+          : `<div class="note">Coming soon.</div>`);
     }).join('')}`;
   $('#knWeek').onchange = e => { kn.week = e.target.value; e.target.blur(); renderKnowStudy(); };
   wireSeg('sgKa', v => { kn.hide = v === 'hide'; kn.shown.clear(); renderKnowStudy(); });
@@ -1416,14 +1480,17 @@ function renderKnowFlash(){
 function knFlip(){ kn.fc.back = !kn.fc.back; renderKnowFlash(); }
 function knMove(d){ const f = kn.fc, n = knDeck().length; f.i = (f.i + d + n) % n; f.back = false; renderKnowFlash(); }
 
+const flat = a => a.replace(/\n- /g, ', ').replace(/^- /, '');
 function makeKnowQuiz(){
-  const pool = shuffle(KNOW).slice(0, QUIZ_LEN);
+  const ok = KNOW.filter(c => flat(c.a).length <= 170);
+  const pool = shuffle(ok).slice(0, QUIZ_LEN);
   return pool.map(c => {
-    const same = KNOW.filter(o => o !== c && o.a !== c.a && o.w === c.w);
-    const other = KNOW.filter(o => o !== c && o.a !== c.a && o.w !== c.w);
-    const seen = new Set([c.a]); const opts = [];
-    for (const o of [...shuffle(same), ...shuffle(other)]){ if (!seen.has(o.a)){ seen.add(o.a); opts.push(o.a); } if (opts.length === 3) break; }
-    return {prompt:esc(c.q), answer:c.a, options:shuffle([c.a, ...opts]), long:true};
+    const A = flat(c.a);
+    const same = ok.filter(o => o !== c && flat(o.a) !== A && o.w === c.w);
+    const other = ok.filter(o => o !== c && flat(o.a) !== A && o.w !== c.w);
+    const seen = new Set([A]); const opts = [];
+    for (const o of [...shuffle(same), ...shuffle(other)]){ const t = flat(o.a); if (!seen.has(t)){ seen.add(t); opts.push(t); } if (opts.length === 3) break; }
+    return {prompt:esc(c.q), answer:A, options:shuffle([A, ...opts]), long:true};
   });
 }
 
