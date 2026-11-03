@@ -215,6 +215,14 @@
   .kcard .ka{font-size:14px;color:var(--gold);margin-top:8px;line-height:1.45;white-space:pre-line}
   .flash .f1.kf{font-size:24px} .flash .f2.kf{font-size:20px;line-height:1.4;white-space:pre-line}
   .qopts.long{grid-template-columns:1fr} .qopts.long .qopt{font-size:15px;line-height:1.4}
+  .gsbox{text-align:center;background:var(--bg2);border-radius:16px;padding:30px 20px 22px}
+  .gsglyph{font-family:'Times New Roman',Georgia,serif;font-size:110px;line-height:1.05;color:var(--gold);margin-bottom:18px;user-select:none}
+  .gsinput{width:min(360px,100%);background:var(--bg3);border:2px solid transparent;color:var(--text);font-family:var(--ui);font-size:22px;text-align:center;padding:12px 16px;border-radius:12px;outline:none}
+  .gsinput:focus{border-color:var(--gold-dim)}
+  .gsinput.right{border-color:var(--ok)} .gsinput.wrong{border-color:var(--err)}
+  .gsfb{height:26px;margin-top:12px;font-size:17px;font-weight:600}
+  .gsfb.ok{color:var(--ok)} .gsfb.bad{color:var(--err)}
+  .missed .gsym{font-family:'Times New Roman',Georgia,serif;font-size:22px;color:var(--gold);margin-right:6px}
   .blank{color:var(--sub2) !important;font-style:italic;font-weight:400 !important}
   .pc.blank{background:transparent;border:1px dashed var(--sub2)}
   .grouph{color:var(--gold);font-size:15px;margin:26px 0 10px;display:flex;gap:10px;align-items:baseline}
@@ -287,6 +295,7 @@
     .flash{min-height:230px;padding:24px 18px}
     .qopt{padding:15px 16px;font-size:16px}
     .qprompt .glyph{font-size:48px}
+    .gsglyph{font-size:84px} .gsinput{font-size:18px}
     .qopts.long .qopt{font-size:14px;padding:12px 14px} .kgrid{grid-template-columns:1fr} .flash .f1.kf{font-size:20px} .flash .f2.kf{font-size:17px}
   }
   #hidden{font-size:16px}
@@ -356,7 +365,7 @@
 
   <!-- EXEC BOARD -->
   <section class="view" id="exec">
-    <div class="exbar"><div class="seg" id="exTabs"><button data-t="study">study sheet</button><button data-t="flash">flashcards</button><button data-t="quiz">quiz</button></div></div>
+    <div class="exbar"><div class="seg" id="exTabs"><button data-t="study">study sheet</button><button data-t="flash">flashcards</button><button data-t="quiz">quiz</button><button data-t="spell" id="tabSpell" style="display:none">spell it</button></div></div>
     <div id="exBody"></div>
   </section>
 
@@ -461,7 +470,7 @@ function show(v){
   if (v === 'board') renderBoard();
   if (v === 'history') renderHistory();
   if (v === 'test') requestAnimationFrame(placeCaret);
-  if (v === 'exec') renderExec(); else pauseAllQuizzes();
+  if (v === 'exec') renderExec(); else { pauseAllQuizzes(); gsPause(); clearInterval(gs.clock); }
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => { if (b.dataset.v==='test') { reset(); } show(b.dataset.v); b.blur(); });
 
@@ -1025,11 +1034,16 @@ const ex = {tab:'study', hide:'none', group:'position', revealed:new Set(), fc:{
 document.querySelectorAll('#exTabs button').forEach(b => b.onclick = () => { ex.tab = b.dataset.t; b.blur(); renderExec(); });
 
 function renderExec(){
+  if (ex.tab === 'spell' && tkey !== 'greek') ex.tab = 'study';
+  $('#tabSpell').style.display = tkey === 'greek' ? '' : 'none';
+  if (ex.tab !== 'spell') gsPause();
+  clearInterval(gs.clock);
   if (ex.tab !== 'quiz') pauseAllQuizzes();
   document.querySelectorAll('#exTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === ex.tab));
   clearInterval(ex.clock);
   if (ex.tab === 'study') (tkey === 'classes' ? renderClassStudy : tkey === 'greek' ? renderGreekStudy : tkey === 'know' ? renderKnowStudy : renderStudy)();
   else if (ex.tab === 'flash') (tkey === 'classes' ? renderClassFlash : tkey === 'greek' ? renderGreekFlash : tkey === 'know' ? renderKnowFlash : renderFlash)();
+  else if (ex.tab === 'spell') renderSpell();
   else renderQuiz();
 }
 
@@ -1171,7 +1185,7 @@ function wireQuizCtrls(){
     startQuiz();
   };
 }
-document.addEventListener('visibilitychange', () => { if (document.hidden){ pauseAllQuizzes(); if (view === 'exec' && ex.tab === 'quiz') renderQuiz(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden){ pauseAllQuizzes(); if (gs.run && !gs.run.done){ gsPause(); if (view === 'exec' && ex.tab === 'spell') renderSpell(); } if (view === 'exec' && ex.tab === 'quiz') renderQuiz(); } });
 
 function answer(i){
   const q = ex.quizBy[tkey]; if (!q || q.done || q.locked || q.pausedAt) return;
@@ -1206,6 +1220,7 @@ function finishQuiz(){
 function execKey(e){
   const t = e.target.tagName;
   if (t === 'SELECT') return;
+  if (ex.tab === 'spell'){ const r = gs.run; if (e.key === 'Enter' && (!r || r.done) && t !== 'BUTTON'){ e.preventDefault(); gsStart(); } return; }
   if ((e.key === ' ' || e.key === 'Enter') && (t === 'BUTTON' || (t === 'DIV' && e.target.id !== 'flashCard' && e.target.tabIndex >= 0))) return;
   if (ex.tab === 'quiz'){
     const q = ex.quizBy[tkey];
@@ -1493,6 +1508,98 @@ function makeKnowQuiz(){
     for (const o of [...shuffle(same), ...shuffle(other)]){ const t = flat(o.a); if (!seen.has(t)){ seen.add(t); opts.push(t); } if (opts.length === 3) break; }
     return {prompt:esc(c.q), answer:A, options:shuffle([A, ...opts]), long:true};
   });
+}
+
+/* ---------- greek letters: spell it ---------- */
+const gs = {show:'both', run:null, clock:null};
+const normName = t => String(t || '').toLowerCase().replace(/[^a-z]/g, '');
+function gsGlyph(g){ return gs.show === 'upper' ? g.up : gs.show === 'lower' ? g.lo : g.up + ' ' + g.lo; }
+function gsElapsed(r){ return performance.now() - r.start - (r.pausedTotal || 0) - (r.pausedAt ? performance.now() - r.pausedAt : 0); }
+function gsPause(){ const r = gs.run; if (r && !r.done && !r.pausedAt){ r.pausedAt = performance.now(); } }
+function gsResume(){ const r = gs.run; if (r && r.pausedAt){ r.pausedTotal = (r.pausedTotal || 0) + performance.now() - r.pausedAt; r.pausedAt = 0; } }
+function gsStart(){ gs.run = {order:shuffle(GREEK.map((_, i) => i)), i:0, score:0, picks:[], start:performance.now(), pausedTotal:0, pausedAt:0, done:false, locked:false, show:gs.show}; renderSpell(); }
+function gsBest(){ try { return (local.spellBest || {})[gs.show] || null; } catch { return null; } }
+
+function renderSpell(){
+  const body = $('#exBody'), r = gs.run;
+  clearInterval(gs.clock);
+  if (!r){
+    const b = gsBest();
+    body.innerHTML = `<div class="qstart"><h3>Spell the Greek Letters</h3>
+      <p>All 24 symbols in random order. Type the name of each one and press <b>Enter</b>.<br>Capitals and spaces don't matter. Leave it blank and press Enter to skip.</p>
+      <div class="exbar" style="justify-content:center"><span><span class="lab">show</span>${segHTML('sgGs', [['both','Α α'],['upper','Α only'],['lower','α only']], gs.show)}</span></div>
+      ${b ? `<p style="color:var(--gold);margin:0 0 18px">Your best: ${b.score}/24 in ${fmtDur(b.time)}</p>` : ''}
+      <button class="btn" id="gsGo">start <kbd style="margin-left:6px">enter</kbd></button></div>`;
+    wireSeg('sgGs', v => { gs.show = v; renderSpell(); });
+    $('#gsGo').onclick = gsStart; return;
+  }
+  if (r.done){
+    const missed = r.picks.filter(x => !x.ok), b = gsBest();
+    body.innerHTML = `<div class="quiz"><div class="qstart" style="padding-bottom:10px">
+      ${r.pb ? '<div class="pb">★ personal best</div>' : ''}
+      <div class="lbl" style="color:var(--sub)">score</div><div class="qscore">${r.score}/24</div>
+      <p style="margin-top:12px">${Math.round(r.score / 24 * 100)}% · ${fmtDur(r.time)} · ${esc(fmtTs(r.ts))}${b && !r.pb ? `<br>Your best: ${b.score}/24 in ${fmtDur(b.time)}` : ''}</p>
+      <div class="actions" style="margin-top:14px"><button class="btn" id="gsAgain">try again <kbd style="margin-left:6px">enter</kbd></button>&nbsp;&nbsp;<button class="btn ghost" id="gsStudy">study sheet</button></div></div>
+      ${missed.length ? `<h2>review what you missed</h2><div class="missed">${missed.map(x => `<div><span class="gsym">${esc(x.glyph)}</span> <span class="you">you typed: ${x.typed ? esc(x.typed) : '(skipped)'}</span> · <span class="ans">answer: ${esc(x.g.name)}</span></div>`).join('')}</div>` : '<p style="text-align:center;color:var(--gold)">Perfect. You spelled all 24.</p>'}</div>`;
+    $('#gsAgain').onclick = gsStart;
+    $('#gsStudy').onclick = () => { ex.tab = 'study'; renderExec(); };
+    return;
+  }
+  const g = GREEK[r.order[r.i]];
+  const top = `<div class="qtop"><span id="gsN">letter ${r.i + 1}/24</span><span class="qtally"><span class="ok" id="gsOk">✓ ${r.score}</span><span class="bad" id="gsBad">✗ ${r.picks.length - r.score}</span></span><span id="gsClock">${fmtDur(gsElapsed(r) / 1000)}</span></div>
+    <div class="qbar"><div id="gsBar" style="width:${r.i / 24 * 100}%"></div></div>`;
+  if (r.pausedAt){
+    body.innerHTML = `<div class="quiz">${top}<div class="qpaused"><div class="ptitle">⏸ Paused</div><p>The timer is stopped and the letter is hidden.</p>
+      <div class="qctrl" style="justify-content:center"><button class="btn" id="gsPause">▶ resume</button><button class="btn ghost" id="gsRestart">↻ restart</button></div></div></div>`;
+  } else {
+    body.innerHTML = `<div class="quiz">${top}
+      <div class="qctrl"><button class="btn ghost" id="gsPause">⏸ pause</button><button class="btn ghost" id="gsRestart">↻ restart</button></div>
+      <div class="gsbox"><div class="gsglyph" id="gsGlyph">${esc(gsGlyph(g))}</div>
+        <form id="gsForm" autocomplete="off"><input id="gsIn" class="gsinput" placeholder="type the name…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Letter name"></form>
+        <div class="gsfb" id="gsFb">&nbsp;</div>
+        <button class="btn ghost" id="gsSkip" type="button" style="margin-top:6px">skip</button></div></div>`;
+    const inp = $('#gsIn');
+    $('#gsForm').onsubmit = e => { e.preventDefault(); gsAnswer(inp.value); };
+    $('#gsSkip').onclick = () => gsAnswer('');
+    inp.addEventListener('keydown', e => { if (e.key === 'Escape'){ e.preventDefault(); gsPause(); renderSpell(); } });
+    setTimeout(() => inp.focus({preventScroll:true}), 0);
+    const tick = () => { const el = $('#gsClock'); if (el) el.textContent = fmtDur(gsElapsed(r) / 1000); };
+    gs.clock = setInterval(tick, 500);
+  }
+  $('#gsPause').onclick = () => { r.pausedAt ? gsResume() : gsPause(); renderSpell(); };
+  const rb = $('#gsRestart');
+  rb.onclick = () => { if (!rb.classList.contains('arm')){ rb.classList.add('arm'); rb.textContent = 'tap again to restart'; setTimeout(() => { if (rb.isConnected){ rb.classList.remove('arm'); rb.textContent = '↻ restart'; } }, 3000); return; } gsStart(); };
+}
+
+function gsAnswer(typed){
+  const r = gs.run; if (!r || r.done || r.locked || r.pausedAt) return;
+  const g = GREEK[r.order[r.i]], ok = normName(typed) === normName(g.name);
+  r.locked = true;
+  if (ok) r.score++;
+  r.picks.push({g, typed:typed.trim(), ok, glyph:gsGlyph(g)});
+  const fb = $('#gsFb'), inp = $('#gsIn');
+  if (inp){ inp.readOnly = true; inp.classList.add(ok ? 'right' : 'wrong'); }
+  if (fb){ fb.className = 'gsfb ' + (ok ? 'ok' : 'bad'); fb.textContent = ok ? '✓ ' + g.name : '✗ it\'s ' + g.name; }
+  setTimeout(() => {
+    r.locked = false; r.i++;
+    if (r.i >= 24){
+      gsResume(); r.done = true; r.time = +(gsElapsed(r) / 1000).toFixed(1); r.ts = Date.now();
+      const b = gsBest();
+      r.pb = !b || r.score > b.score || (r.score === b.score && r.time < b.time);
+      if (r.pb){ local.spellBest = Object.assign({}, local.spellBest, {[r.show]: {score:r.score, time:r.time, ts:r.ts}}); saveLocal(); }
+    }
+    if (!(tkey === 'greek' && view === 'exec' && ex.tab === 'spell')) return;
+    const inp2 = $('#gsIn');
+    if (!r.done && !r.pausedAt && inp2){
+      const ng = GREEK[r.order[r.i]];
+      $('#gsGlyph').textContent = gsGlyph(ng);
+      $('#gsN').textContent = 'letter ' + (r.i + 1) + '/24';
+      $('#gsOk').textContent = '✓ ' + r.score; $('#gsBad').textContent = '✗ ' + (r.picks.length - r.score);
+      $('#gsBar').style.width = (r.i / 24 * 100) + '%';
+      const fb2 = $('#gsFb'); fb2.className = 'gsfb'; fb2.innerHTML = '&nbsp;';
+      inp2.classList.remove('right', 'wrong'); inp2.value = ''; inp2.readOnly = false; inp2.focus({preventScroll:true});
+    } else renderSpell();
+  }, ok ? 550 : 1400);
 }
 
 /* ---------- pledge classes ---------- */
